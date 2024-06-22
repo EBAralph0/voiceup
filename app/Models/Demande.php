@@ -9,7 +9,7 @@ class Demande extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'nom_entreprise'];
+    protected $fillable = ['user_id', 'nom_entreprise', "statut"];
 
     public function user()
     {

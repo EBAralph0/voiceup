@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Entreprise::class, 'created_by_id');
     }
+
+    public function proprietaire()
+    {
+        return $this->hasOne(Entreprise::class, 'proprietaire_id');
+    }
 }

@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Entreprise;
-
+use App\Models\Secteur;
+use App\Models\Demande;
+use App\Models\User;
+use App\Notifications\EntrepriseCreated;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 
 class EntrepriseController extends Controller
@@ -25,10 +29,13 @@ class EntrepriseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(int $id, int $proprietaire_id)
     {
         //
-        return view('entreprises.create');
+        $demande = Demande::findOrFail($id);
+        $secteurs = Secteur::all();
+        $proprietaire_id= User::findOrFail($proprietaire_id);
+        return view('entreprises.create',compact('id','demande','secteurs','proprietaire_id'));
     }
 
     /**
@@ -37,19 +44,19 @@ class EntrepriseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,int $id, int $proprietaire_id)
     {
         //
         // Valider les données du formulaire
         $request->validate([
-            'nom_entreprise' => 'required|string|max:255',
+            'nom_entreprise' => 'unique:entreprises|required|string|max:255',
             'sigle' => 'required|string|max:255',
-            'numero_entreprise' => 'required|string|max:255',
-            'mail_entreprise' => 'required|email|max:255',
+            'numero_entreprise' => 'unique:entreprises|required|string|max:255',
+            'mail_entreprise' => 'unique:entreprises|required|email|max:255',
             'logo_entreprise' => 'required|string|max:255', // Assurez-vous que le fichier est une image et respecte les contraintes
-            'slogan' => 'required|string|max:255', // Assurez-vous que le fichier est une image et respecte les contraintes
-            'description' => 'required|string|max:255', // Assurez-vous que le fichier est une image et respecte les contraintes
-            'secteur' => 'required|string|max:255', // Assurez-vous que le fichier est une image et respecte les contraintes
+            'slogan' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'id_secteur' => 'required|string|max:255',
 
         ]);
 
@@ -58,9 +65,22 @@ class EntrepriseController extends Controller
         $entreprise->fill($request->all());
         $entreprise->id_entreprise = Str::uuid()->toString();
         $entreprise->created_by_id = Auth::user()->id;
+        $entreprise->proprietaire_id=$proprietaire_id;
+
+        // Mettre à jour le statut de la demande
+        $demande = Demande::findOrFail($id);
+        $demande->statut = 'validated';
+
+        //mettre proprietaire a true et affecter le proprietaire a l'entreprise
+        $proprietaire = User::findOrFail($proprietaire_id);
+        $proprietaire->proprietaire = true;
 
         try {
             $entreprise->save();
+            $demande->save();
+
+            Notification::route('mail', 'edracresurek@gmail.com')->notify(new EntrepriseCreated($entreprise));
+            notify()->success("L'entreprise viens d'etre creee !");
             return redirect()->route('entreprises.index')->with('success', 'Entreprise créée avec succès.');
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTrace()], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -115,4 +135,6 @@ class EntrepriseController extends Controller
         $entreprise->delete();
         return redirect()->route('entreprises.index')->with('success', 'Entreprise supprimée avec succès.');
     }
+
+
 }

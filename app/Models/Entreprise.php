@@ -14,7 +14,7 @@ class Entreprise extends Model
     protected $primaryKey = 'id_entreprise';
     public $incrementing = false;
 
-    protected $fillable =["nom_entreprise","sigle","numero_entreprise","mail_entreprise","logo_entreprise","created_by_id","slogan","description","id_secteur"];
+    protected $fillable =["nom_entreprise","sigle","numero_entreprise","mail_entreprise","logo_entreprise","created_by_id","slogan","description","id_secteur","proprietaire_id"];
 
     public $sortable = [
         "nom_entreprise",
@@ -25,7 +25,8 @@ class Entreprise extends Model
         "created_by_id",
         "slogan",
         "description",
-        "id_secteur"
+        "id_secteur",
+        "proprietaire_id"
     ];
 
     public $timestamps = false;
@@ -35,7 +36,13 @@ class Entreprise extends Model
      {
          return $this->belongsTo(User::class, 'created_by_id');
      }
- 
+
+     // Relation avec User
+     public function proprietaire()
+     {
+         return $this->belongsTo(User::class, 'proprietaire_id');
+     }
+
      // Relation avec Secteur
      public function secteur()
      {
