@@ -99,6 +99,19 @@ class EntrepriseController extends Controller
         return view('entreprises.show', compact('entreprise'));
     }
 
+    public function list_questionnaire($id)
+    {
+        $entreprise = Entreprise::with('questionnaires')->findOrFail($id);
+        return view('entreprises.list_questionnaire', compact('entreprise'));
+    }
+
+    public function detail($id)
+    {
+        $entreprise = Entreprise::with('questionnaires')->findOrFail($id);
+        return view('entreprises.detail', compact('entreprise'));
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      *

@@ -54,6 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('#demandeForm button[type="submit"]').disabled = true;
         });
     }
+
+    var questionnaireForm = document.getElementById('questionnaireForm');
+    if (questionnaireForm) {
+        questionnaireForm.addEventListener('submit', function(event) {
+            document.getElementById('loadingIndicatorQuestionnaire').style.display = 'flex';
+            document.querySelector('#questionnaireForm button[type="submit"]').disabled = true;
+        });
+    }
+
+    document.getElementById('toggleViewBtn').addEventListener('click', function () {
+        var container = document.getElementById('entrepriseContainer');
+        container.classList.toggle('list-view');
+        container.classList.toggle('grid-view');
+    });
 });
 
 

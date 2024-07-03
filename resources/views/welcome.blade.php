@@ -52,41 +52,41 @@
         <span class="visually-hidden">Next</span>
       </button>
 </div>
-  
-  
+
+
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
-  
+
     <div class="container marketing">
-  
+
       <!-- Three columns of text below the carousel -->
       <div class="row flex-nowrap overflow-auto">
         <div class="col-lg-4">
           <img src="{{ asset("images/e3.jpg") }}" class="bd-placeholder-img" width="130px" height="130px" alt="..." style="background-size: cover;background-repeat: no-repeat;">
-          
+
           <h2>Heading</h2>
           <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
           <p><a class="btn btn-secondary" href="#">View details »</a></p>
         </div><!-- /.col-lg-4 -->
-        
+
 
         @foreach($entreprises  as $e)
         <div class="col-lg-4">
             <img src="{{$e->logo_entreprise}}" class="bd-placeholder-img" width="130px" height="130px" alt="..." style="background-size: cover;background-repeat: no-repeat;">
-            
+
             <h2>{{$e->sigle}} : {{$e->nom_entreprise}}</h2>
             <p>{{$e->description}}</p>
-            <p><a class="btn btn-secondary" href="#">Voir les details »</a></p>
+            <p><a class="btn btn-secondary" href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}">Voir les details »</a></p>
           </div><!-- /.col-lg-4 -->
         @endforeach
       </div><!-- /.row -->
-  
-  
+
+
       <!-- START THE FEATURETTES -->
-  
+
       <hr class="featurette-divider">
-  
+
       <div class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It’ll blow your mind.</span></h2>
@@ -94,12 +94,12 @@
         </div>
         <div class="col-md-5">
           <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-  
+
         </div>
       </div>
-  
+
       <hr class="featurette-divider">
-  
+
       <div class="row featurette">
         <div class="col-md-7 order-md-2">
           <h2 class="featurette-heading">Oh yeah, it’s that good. <span class="text-muted">See for yourself.</span></h2>
@@ -107,12 +107,12 @@
         </div>
         <div class="col-md-5 order-md-1">
           <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-  
+
         </div>
       </div>
-  
+
       <hr class="featurette-divider">
-  
+
       <div class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
@@ -120,17 +120,17 @@
         </div>
         <div class="col-md-5">
           <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text></svg>
-  
+
         </div>
       </div>
-  
+
       <hr class="featurette-divider">
-  
+
       <!-- /END THE FEATURETTES -->
-  
+
     </div><!-- /.container -->
-  
-  
+
+
     <!-- FOOTER -->
     <footer class="container">
       <p class="float-end"><a href="#">Back to top</a></p>

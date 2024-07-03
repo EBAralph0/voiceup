@@ -48,4 +48,9 @@ class Entreprise extends Model
      {
          return $this->belongsTo(Secteur::class, 'id_secteur');
      }
+
+     public function questionnaires()
+    {
+        return $this->hasMany(Questionnaire::class, 'entreprise_id');
+    }
 }

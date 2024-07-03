@@ -90,6 +90,7 @@ height: 100%;
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('demandes.create') }}">Add my company</a>
+                                    <a class="dropdown-item" href="{{ route('entreprises.index') }}">company list</a>
                                     <a class="dropdown-item" href="#">Settings</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
