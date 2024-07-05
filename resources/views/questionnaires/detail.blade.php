@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Questionaires #{{$questionnaire->id}}: {{ $questionnaire->intitule }}</h2>
+<div class="container mt-3">
+    <div class="d-flex w-100" style="justify-content: space-between">
+        <h2>Questionaires #{{$questionnaire->id}}: {{ $questionnaire->intitule }}</h2>
+        <a href="{{ route('questionnaires.dashboard', $questionnaire->id) }}" class="btn btn-primary">Dashboard</a>
+    </div>
+
     <p>{{ $questionnaire->description }}</p>
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -38,7 +42,7 @@
     @if($questionnaire->questions->isEmpty())
         <p>No questions available for this questionnaire.</p>
     @else
-        <div class="list-group" style="height:256px;overflow-y:scroll;">
+        <div class="list-group" style="height:246px;overflow-y:scroll;">
             @foreach($questionnaire->questions as $question)
                 <div class="col mb-1">
                     <div class="card">

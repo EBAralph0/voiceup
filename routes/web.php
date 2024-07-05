@@ -10,6 +10,7 @@ use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,4 +64,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Route pour soumettre les réponses
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
+
+    Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
 });
