@@ -23,6 +23,6 @@ class ResponseController extends Controller
             ]);
         }
 
-        return redirect()->route('/')->with('success', 'Responses submitted successfully.');
+        return redirect()->route('home')->with('success', 'Responses submitted successfully.');
     }
 }
