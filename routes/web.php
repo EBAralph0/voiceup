@@ -33,8 +33,8 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
- Route::get('/entreprises/create/{proprietaire_id}/{id}', [EntrepriseController::class, 'create'])->name('entreprises.create');
- Route::post('/entreprises/{proprietaire_id}/{id}', [EntrepriseController::class, 'store'])->name('entreprises.store');
+ Route::get('/entreprises/create/{id}', [EntrepriseController::class, 'create'])->name('entreprises.create');
+ Route::post('/entreprises/{id}/{proprietaire_id}', [EntrepriseController::class, 'store'])->name('entreprises.store');
  Route::get('/entreprises/{id}/detail', [EntrepriseController::class, 'detail'])->name('entreprises.detail');
 // Route pour afficher les détails de l'entreprise avec les questionnaires
  Route::get('/entreprises/{id}/list_questionnaire', [EntrepriseController::class, 'list_questionnaire'])->name('entreprises.list_questionnaire');
@@ -61,9 +61,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Route pour afficher les questions d'un questionnaire
     Route::get('/questionnaires/{id}/questions', [QuestionnaireController::class, 'showQuestions'])->name('questionnaires.questions');
-
     // Route pour soumettre les réponses
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
-
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
+
+    Route::get('/entreprises/{id}/avis/create', [AvisController::class, 'create'])->name('avis.create');
+    Route::post('/entreprises/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
 });

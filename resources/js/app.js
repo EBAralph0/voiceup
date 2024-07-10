@@ -63,6 +63,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    var reponseForm = document.getElementById('reponseForm');
+    if (reponseForm) {
+        reponseForm.addEventListener('submit', function(event) {
+            document.getElementById('loadingIndicatorReponse').style.display = 'flex';
+            document.querySelector('#reponseForm button[type="submit"]').disabled = true;
+        });
+    }
+
     document.getElementById('toggleViewBtn').addEventListener('click', function () {
         var container = document.getElementById('entrepriseContainer');
         container.classList.toggle('list-view');
@@ -116,5 +124,5 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-    
+
 });

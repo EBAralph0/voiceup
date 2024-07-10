@@ -13,13 +13,13 @@
             <div class="card-body">
                 <blockquote class="blockquote mb-0 d-flex" style="justify-content: space-between">
                     <div style="width: 256px;height: 256px;">
-                        <canvas id="bar-chart-{{ Str::slug($questionData['question']) }}"></canvas>
+                        <canvas id="bar-chart-{{ $questionData['id'] }}"></canvas>
                     </div>
                     <div style="width: 256px;height: 256px;">
-                        <canvas id="doughnut-chart-{{ Str::slug($questionData['question']) }}"></canvas>
+                        <canvas id="doughnut-chart-{{ $questionData['id'] }}"></canvas>
                     </div>
                     <div style="width: 256px;height: 256px;">
-                        <canvas id="pie-chart-{{ Str::slug($questionData['question']) }}"></canvas>
+                        <canvas id="pie-chart-{{ $questionData['id'] }}"></canvas>
                     </div>
                 </blockquote>
             </div>
@@ -35,12 +35,13 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     @foreach($data as $questionData)
-        const barCtx{{ Str::slug($questionData['question']) }} = document.getElementById('bar-chart-{{ Str::slug($questionData['question']) }}').getContext('2d');
-        new Chart(barCtx{{ Str::slug($questionData['question']) }}, {
+        const barCtx{{ $questionData['id'] }} = document.getElementById('bar-chart-{{ $questionData['id'] }}').getContext('2d');
+        new Chart(barCtx{{ $questionData['id'] }}, {
             type: 'bar',
             data: {
                 labels: @json(array_column($questionData['data'], 'choix')),
@@ -53,16 +54,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 }]
             },
             options: {
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        align: 'center',
+                        anchor: 'center',
+                        formatter: function(value) {
+                            return value;
+                        }
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
-        const doughnutCtx{{ Str::slug($questionData['question']) }} = document.getElementById('doughnut-chart-{{ Str::slug($questionData['question']) }}').getContext('2d');
-        new Chart(doughnutCtx{{ Str::slug($questionData['question']) }}, {
+        const doughnutCtx{{ $questionData['id'] }} = document.getElementById('doughnut-chart-{{ $questionData['id'] }}').getContext('2d');
+        new Chart(doughnutCtx{{ $questionData['id'] }}, {
             type: 'doughnut',
             data: {
                 labels: @json(array_column($questionData['data'], 'choix')),
@@ -91,11 +104,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     ],
                     borderWidth: 1
                 }]
-            }
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        formatter: function(value) {
+                            if(value != 0){
+                            return value;}
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
 
-        const pieCtx{{ Str::slug($questionData['question']) }} = document.getElementById('pie-chart-{{ Str::slug($questionData['question']) }}').getContext('2d');
-        new Chart(pieCtx{{ Str::slug($questionData['question']) }}, {
+        const pieCtx{{ $questionData['id'] }} = document.getElementById('pie-chart-{{ $questionData['id'] }}').getContext('2d');
+        new Chart(pieCtx{{ $questionData['id'] }}, {
             type: 'pie',
             data: {
                 labels: @json(array_column($questionData['data'], 'choix')),
@@ -124,7 +150,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     ],
                     borderWidth: 1
                 }]
-            }
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        formatter: function(value) {
+                            if(value != 0){
+                            return value;}
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
     @endforeach
 
@@ -142,12 +181,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }]
         },
         options: {
+            plugins: {
+                datalabels: {
+                    display: true,
+                    color: 'black',
+                    align: 'end',
+                    anchor: 'end',
+                    formatter: function(value) {
+                        if(value != 0){
+                        return value;}
+                    }
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true
                 }
             }
-        }
+        },
+        plugins: [ChartDataLabels]
     });
 });
 </script>

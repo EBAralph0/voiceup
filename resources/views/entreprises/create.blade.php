@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form id="entrepriseForm" action="{{ route('entreprises.store', ['proprietaire_id' => $demande->user->id, 'id' => $demande->id]) }}" method="POST" enctype="multipart/form-data">
+    <form id="entrepriseForm" action="{{ route('entreprises.store', ['id' => $demande->id, 'proprietaire_id' => $demande->user->id]) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="nom_entreprise">Nom de l'entreprise</label>

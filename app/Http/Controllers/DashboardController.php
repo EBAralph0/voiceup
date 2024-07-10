@@ -34,6 +34,7 @@ class DashboardController extends Controller
                 }
             }
             $data[] = [
+                'id' => $question->id, // Assurez-vous que l'ID est inclus
                 'question' => $question->text,
                 'data' => $questionData,
             ];

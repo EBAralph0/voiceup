@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Entreprise::class, 'proprietaire_id');
     }
+
+    public function avis()
+    {
+        return $this->hasMany(Avis::class);
+    }
 }

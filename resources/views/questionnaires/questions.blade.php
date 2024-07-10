@@ -5,7 +5,7 @@
     <h2>{{ $questionnaire->intitule }}</h2>
     <p>{{ $questionnaire->description }}</p>
 
-    <form action="{{ route('responses.submit', $questionnaire->id) }}" method="POST">
+    <form action="{{ route('responses.submit', $questionnaire->id) }}" method="POST" id="reponseForm">
         @csrf
         @foreach($questionnaire->questions as $question)
             <div class="mb-3">
@@ -26,5 +26,8 @@
         @endforeach
         <button type="submit" class="btn btn-primary">Submit Responses</button>
     </form>
+    <span id="loadingIndicatorReponse" class="loading-indicator" style="display: none;">
+        <div class="spinner-border text-success"><span class="visually-hidden">Loading...</span></div>
+    </span>
 </div>
 @endsection

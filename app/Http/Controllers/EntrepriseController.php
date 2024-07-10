@@ -29,13 +29,12 @@ class EntrepriseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(int $id, int $proprietaire_id)
+    public function create(int $id)
     {
         //
         $demande = Demande::findOrFail($id);
         $secteurs = Secteur::all();
-        $proprietaire_id= User::findOrFail($proprietaire_id);
-        return view('entreprises.create',compact('id','demande','secteurs','proprietaire_id'));
+        return view('entreprises.create',compact('id','demande','secteurs'));
     }
 
     /**
@@ -44,20 +43,18 @@ class EntrepriseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,int $id, int $proprietaire_id)
+    public function store(Request $request, int $id, int $proprietaire_id)
     {
-        //
         // Valider les données du formulaire
         $request->validate([
             'nom_entreprise' => 'unique:entreprises|required|string|max:255',
             'sigle' => 'required|string|max:255',
             'numero_entreprise' => 'unique:entreprises|required|string|max:255',
             'mail_entreprise' => 'unique:entreprises|required|email|max:255',
-            'logo_entreprise' => 'required|string|max:255', // Assurez-vous que le fichier est une image et respecte les contraintes
+            'logo_entreprise' => 'required|string|max:255',
             'slogan' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'id_secteur' => 'required|string|max:255',
-
         ]);
 
         // Créer une nouvelle instance de Entreprise
@@ -65,22 +62,23 @@ class EntrepriseController extends Controller
         $entreprise->fill($request->all());
         $entreprise->id_entreprise = Str::uuid()->toString();
         $entreprise->created_by_id = Auth::user()->id;
-        $entreprise->proprietaire_id=$proprietaire_id;
+        $entreprise->proprietaire_id = $proprietaire_id;
 
         // Mettre à jour le statut de la demande
         $demande = Demande::findOrFail($id);
         $demande->statut = 'validated';
 
-        //mettre proprietaire a true et affecter le proprietaire a l'entreprise
+        // mettre proprietaire à true et affecter le proprietaire à l'entreprise
         $proprietaire = User::findOrFail($proprietaire_id);
         $proprietaire->proprietaire = true;
 
         try {
             $entreprise->save();
             $demande->save();
+            $proprietaire->save();
 
             Notification::route('mail', 'edracresurek@gmail.com')->notify(new EntrepriseCreated($entreprise));
-            notify()->success("L'entreprise viens d'etre creee !");
+            notify()->success("L'entreprise vient d'être créée !");
             return redirect()->route('entreprises.index')->with('success', 'Entreprise créée avec succès.');
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTrace()], Response::HTTP_INTERNAL_SERVER_ERROR);
