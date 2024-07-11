@@ -11776,3 +11776,43 @@ div.table-responsive > div.dt-container > div.row > div[class^=col-]:last-child 
 .position-absolute {
     position: absolute;
 }
+
+.wrapper-rating {
+  font-size: 3em;
+  line-height: 0;
+  margin: 0;
+  --coulFillHover: #FD0;            /* couleur de fond au survol */
+  --coulFillSelected: #FFC;         /* couleur de fond selected */
+  --coulStrokeHover: #F00;          /* couleur de bord au survol */
+  --coulStrokeSelected: #FA0;       /* couleur de bord selected */
+}
+.wrapper-rating label {
+  cursor: pointer;
+  border-bottom: 2px solid currentColor;
+}
+.wrapper-rating input {
+  position: absolute;
+  opacity: 0;
+}
+.wrapper-rating input:checked ~ * label {
+  --coulFillSelected: #FAFAFA;      /* couleur de fond par défaut */
+  --coulStrokeSelected: #CCC;       /* couleur de bord par défaut */
+  border-bottom: 2px solid transparent;
+}
+.wrapper-rating .star {
+  display: inline-flex;
+  color: var(--coulStrokeSelected);
+  cursor: pointer;
+}
+.wrapper-rating .star svg {
+  width: 1em;
+  height: 1em;
+  transition: .25s;
+  stroke-width: 1;
+  stroke: var(--coulStrokeSelected);
+  fill: var(--coulFillSelected);
+}
+.wrapper-rating .star:hover > label svg {
+  fill: var(--coulFillHover);
+  stroke: var(--coulStrokeHover);
+}

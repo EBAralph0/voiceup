@@ -54,8 +54,8 @@ class Entreprise extends Model
         return $this->hasMany(Questionnaire::class, 'entreprise_id');
     }
 
-    // public function avis()
-    // {
-    //     return $this->hasMany(Avis::class);
-    // }
+    public function avis()
+    {
+        return $this->hasMany(Avis::class, 'entreprise_ids', 'id_entreprise');
+    }
 }

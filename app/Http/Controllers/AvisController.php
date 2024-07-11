@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Avis;
+use App\Models\Entreprise;
+use Illuminate\Support\Facades\Auth;
 
 class AvisController extends Controller
 {
@@ -13,7 +16,7 @@ class AvisController extends Controller
         return view('avis.create', compact('entreprise'));
     }
 
-    public function store(Request $request, $entreprise_id)
+    public function store(Request $request, string $entreprise_id)
     {
         $request->validate([
             'note' => 'required|numeric|min:0|max:5',
@@ -22,11 +25,11 @@ class AvisController extends Controller
 
         Avis::create([
             'user_id' => Auth::id(),
-            'entreprise_id' => $entreprise_id,
+            'entreprise_ids' => $entreprise_id,
             'note' => $request->note,
             'commentaire' => $request->commentaire,
         ]);
 
-        return redirect()->route('entreprises.show', $entreprise_id)->with('success', 'Avis ajouté avec succès.');
+        return redirect()->route('entreprises.list_questionnaire', $entreprise_id)->with('success', 'Avis ajouté avec succès.');
     }
 }

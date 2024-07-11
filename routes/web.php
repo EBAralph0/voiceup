@@ -5,12 +5,14 @@ use App\Models\Entreprise;
 use App\Models\Demandes;
 use App\Models\Questionnaire;
 use App\Models\Question;
+use App\Models\Avis;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AvisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/demandes/{id}', [DemandeController::class, 'show'])->name('demandes.show');
     Route::get('/demandes/reject/{id}', [DemandeController::class, 'reject'])->name('demandes.reject');
 
+    Route::get('/avis/{id}/avis/create', [AvisController::class, 'create'])->name('avis.create');
+    Route::post('/avis/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
+
     Route::get('/questionnaires/create/{entreprise_id}', [QuestionnaireController::class, 'create'])->name('questionnaires.create');
     Route::post('/questionnaires/{entreprise_id}', [QuestionnaireController::class, 'store'])->name('questionnaires.store');
     Route::get('/questionnaires/{id}', [QuestionnaireController::class, 'detail'])->name('questionnaires.detail');
@@ -65,6 +70,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
 
-    Route::get('/entreprises/{id}/avis/create', [AvisController::class, 'create'])->name('avis.create');
-    Route::post('/entreprises/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
+
 });

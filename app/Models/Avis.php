@@ -9,15 +9,15 @@ class Avis extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'entreprise_id', 'note', 'commentaire'];
+    protected $fillable = ['user_id', 'entreprise_ids', 'note', 'commentaire'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // public function entreprise()
-    // {
-    //     return $this->belongsTo(Entreprise::class);
-    // }
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class, 'entreprise_ids', 'id_entreprise');
+    }
 }
