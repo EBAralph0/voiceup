@@ -176,5 +176,15 @@ class EntrepriseController extends Controller
         return redirect()->route('entreprises.index')->with('success', 'Entreprise supprimée avec succès.');
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+        $companies = Entreprise::where('nom_entreprise', 'like', '%' . $query . '%')
+            ->orWhere('slogan', 'like', '%' . $query . '%')
+            ->get(['id_entreprise', 'nom_entreprise', 'logo_entreprise', 'slogan']);
+
+        return response()->json($companies);
+    }
+
 
 }

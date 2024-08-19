@@ -87,5 +87,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
 
-
 });
+Route::get('/search-companies', [EntrepriseController::class, 'search'])->name('companies.search');
+

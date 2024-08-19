@@ -87,7 +87,7 @@
                                         <p class="card-text flex-grow-1 text-truncate" style="max-height: 4.8em; line-height: 1.2em; overflow: hidden;">
                                             {{ $e->description }}
                                         </p>
-                                        <a href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}" class="btn btn-secondary mt-auto">Voir les détails »</a>
+                                        <a href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}" class="btn btn-secondary mt-auto"><i class="bi bi-eye-fill">see details</i></a>
                                     </div>
                                 </div>
                             @endforeach

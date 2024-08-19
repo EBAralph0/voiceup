@@ -44,11 +44,12 @@ height: 100%;
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm p-1">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset("images/voiceup.png") }}" class="d-block" height="50px" width="50px" alt="Voice Up">
+                <img src="{{ asset('images/voiceup.png') }}" class="d-block" height="50px" width="50px" alt="Voice Up">
             </a>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+            <form class="d-flex position-relative">
+                <input id="searchInput" class="form-control me-2" type="search" placeholder="Search companies..." aria-label="Search">
+                <button class="btn btn-outline-success" type="button">Search</button>
+                <div id="searchResults" class="position-absolute container rounded bg-white shadow-sm" style="display: none; max-height: 300px; overflow-y: auto; width: 100%; z-index: 1000; top:3em;"></div>
             </form>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
@@ -104,9 +105,71 @@ height: 100%;
             </main>
         </div>
     </div>
+
+    @section('scripts')
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            var searchInput = document.getElementById('searchInput');
+            var searchResults = document.getElementById('searchResults');
+
+            searchInput.addEventListener('input', function() {
+                var query = searchInput.value.trim();
+
+                if (query.length > 0) {
+                    // Envoyer une requête AJAX pour récupérer les résultats
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', `/search-companies?q=${encodeURIComponent(query)}`, true);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var companies = JSON.parse(xhr.responseText);
+                            displayResults(companies);
+                        }
+                    };
+                    xhr.send();
+                } else {
+                    searchResults.style.display = 'none';
+                }
+            });
+
+            function displayResults(companies) {
+                searchResults.innerHTML = '';
+                if (companies.length > 0) {
+                    companies.forEach(function(company) {
+                        var resultItem = document.createElement('a');
+                        resultItem.href = `/entreprises/${company.id_entreprise}/list_questionnaire`;
+                        resultItem.className = 'list-group-item list-group-item-action';
+                        resultItem.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <img src="${company.logo_entreprise || '/images/voiceup.png'}" class="me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                <div>
+                                    <strong>${company.nom_entreprise}</strong><br>
+                                    <small>${company.slogan}</small>
+                                </div>
+                            </div>
+                        `;
+                        searchResults.appendChild(resultItem);
+                    });
+                    searchResults.style.display = 'block';
+                } else {
+                    searchResults.innerHTML = '<div class="list-group-item">No companies found</div>';
+                    searchResults.style.display = 'block';
+                }
+            }
+
+            // Masquer les résultats si l'utilisateur clique en dehors du champ de recherche
+            document.addEventListener('click', function(event) {
+                if (!searchResults.contains(event.target) && event.target !== searchInput) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    @endsection
+
     @yield('scripts')
     {{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7HUbX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
+
 </body>
 </html>
