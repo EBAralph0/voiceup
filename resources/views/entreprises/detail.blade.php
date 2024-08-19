@@ -4,6 +4,7 @@
 <div class="d-flex mt-4">
     <div class="container">
         <h2>{{ $entreprise->nom_entreprise }}</h2>
+        <a href="{{ route('avis.analyze',$entreprise->id_entreprise)}}" class="btn btn-primary">Voir les suggestions d'ameliorations</a>
         <p><strong>Acronym :</strong> {{ $entreprise->sigle }}</p>
         <p><strong>Company number :</strong> {{ $entreprise->numero_entreprise }}</p>
         <p><strong>Email :</strong> {{ $entreprise->mail_entreprise }}</p>
@@ -32,8 +33,8 @@
                 <label for="description">Description</label>
                 <input type="text" name="description" id="description" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary mr-1">Create</button>
-            <button type="reset" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary mt-1 me-2">Create</button>
+            <button type="reset" class="btn btn-secondary mt-1">Cancel</button>
         </form>
         <span id="loadingIndicatorQuestionnaire" class="loading-indicator" style="display: none;">
             <div class="spinner-border text-success"><span class="visually-hidden">Loading...</span></div>

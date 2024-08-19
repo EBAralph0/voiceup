@@ -20,27 +20,37 @@ class DemandeController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nom_entreprise' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'nom_entreprise' => 'required|string|max:255',
+    ]);
 
-        $demande = Demande::create([
-            'user_id' => Auth::id(),
-            'nom_entreprise' => $request->nom_entreprise,
-            'statut' => "waiting",
-        ]);
+    $demande = Demande::create([
+        'user_id' => Auth::id(),
+        'nom_entreprise' => $request->nom_entreprise,
+        'statut' => "waiting",
+    ]);
 
-
+    try {
         Notification::route('mail', 'edracresurek@gmail.com')->notify(new DemandeCreated($demande));
-        //notify()->success("La demande pour <span class='badge badge-dark'>{$demande->nom_entreprise}</span> est en attente");
         notify()->success("La demande pour $demande->nom_entreprise est en attente");
-        return redirect()->route('demandes.create')->with('success', 'Demande  créée avec succès.');
+    } catch (\Swift_TransportException $e) {
+        // \Log::error('Erreur lors de l\'envoi du mail : ' . $e->getMessage());
+        return redirect()->route('demandes.create')
+            ->with('warning', 'Demande créée avec succès, mais un problème est survenu lors de l\'envoi du mail de notification.');
+    } catch (\Exception $e) {
+        // \Log::error('Erreur lors de la création de la demande : ' . $e->getMessage());
+        return redirect()->route('demandes.create')
+            ->with('error', 'Un problème est survenu lors de la création de la demande.');
     }
+
+    return redirect()->route('demandes.create')->with('success', 'Demande créée avec succès.');
+}
+
 
     public function index()
     {
-        $demandes = Demande::all();
+        $demandes = Demande::orderBy('created_at', 'desc')->paginate(5);;
         return view('demandes.index', compact('demandes'));
     }
 
@@ -51,14 +61,26 @@ class DemandeController extends Controller
     }
 
     public function reject($id)
-    {
-        $demandes = Demande::all();
-        $demande = Demande::findOrFail($id);
-        $demande->statut="rejected";
-        $demande->save();
+{
+    $demandes = Demande::all();
+    $demande = Demande::findOrFail($id);
+    $demande->statut = "rejected";
+    $demande->save();
+
+    try {
         Notification::route('mail', 'edracresurek@gmail.com')->notify(new DemandeRejected($demande));
-        notify()->error("La demande pour $demande->nom_entreprise est rejetee");
-        return view('demandes.index', compact('demandes'));
+        notify()->error("La demande pour $demande->nom_entreprise est rejetée");
+    } catch (\Swift_TransportException $e) {
+        // \Log::error('Erreur lors de l\'envoi du mail : ' . $e->getMessage());
+        return redirect()->route('demandes.index')
+            ->with('warning', 'Demande rejetée, mais un problème est survenu lors de l\'envoi du mail de notification.');
+    } catch (\Exception $e) {
+        // \Log::error('Erreur lors du rejet de la demande : ' . $e->getMessage());
+        return redirect()->route('demandes.index')
+            ->with('error', 'Un problème est survenu lors du rejet de la demande.');
     }
+
+    return view('demandes.index', compact('demandes'));
+}
 
 }

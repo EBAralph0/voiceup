@@ -18,8 +18,8 @@
             <p class="card-text">User name: {{ $demande->user->name }}</p>
             <p class="card-text">Created at: {{ $demande->created_at }}</p>
             <div class="d-flex">
-                <a href="{{ route('demandes.index') }}" class="btn btn-primary mr-2">See request list</a>
-                <a href="{{ route('entreprises.create', ['proprietaire_id' => $demande->user->id, 'id' => $demande->id]) }}" class="btn btn-success mr-2">Create the company</a>
+                <a href="{{ route('demandes.index') }}" class="btn btn-primary me-2">See request list</a>
+                <a href="{{ route('entreprises.create', ['proprietaire_id' => $demande->user->id, 'id' => $demande->id]) }}" class="btn btn-success me-2">Create the company</a>
 
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
                     Reject the request

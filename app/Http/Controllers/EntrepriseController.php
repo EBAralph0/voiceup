@@ -18,11 +18,16 @@ class EntrepriseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $entreprises = Entreprise::all();
-        return view('entreprises.index', compact('entreprises'));
+        $secteurs = Secteur::all();
+        $entreprises = Entreprise::when($request->sector_id, function ($query) use ($request) {
+                return $query->where('id_secteur', $request->sector_id);
+            })->paginate(5);
+
+        return view('entreprises.index', compact('entreprises', 'secteurs'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,7 +73,7 @@ class EntrepriseController extends Controller
         $demande = Demande::findOrFail($id);
         $demande->statut = 'validated';
 
-        // mettre proprietaire à true et affecter le proprietaire à l'entreprise
+        // Mettre proprietaire à true et affecter le proprietaire à l'entreprise
         $proprietaire = User::findOrFail($proprietaire_id);
         $proprietaire->proprietaire = true;
 
@@ -77,7 +82,16 @@ class EntrepriseController extends Controller
             $demande->save();
             $proprietaire->save();
 
-            Notification::route('mail', 'edracresurek@gmail.com')->notify(new EntrepriseCreated($entreprise));
+            // Tentative d'envoi de la notification par email
+            try {
+                Notification::route('mail', 'edracresurek@gmail.com')->notify(new EntrepriseCreated($entreprise));
+            } catch (\Swift_TransportException $e) {
+                // Gérer les erreurs de transport, comme les problèmes de connexion
+                // \Log::error('Erreur lors de l\'envoi du mail : ' . $e->getMessage());
+                return redirect()->route('entreprises.index')
+                    ->with('warning', 'L\'entreprise a été créée, mais un problème est survenu lors de l\'envoi du mail de notification.');
+            }
+
             notify()->success("L'entreprise vient d'être créée !");
             return redirect()->route('entreprises.index')->with('success', 'Entreprise créée avec succès.');
         } catch (Exception $e) {
@@ -118,8 +132,9 @@ class EntrepriseController extends Controller
      */
     public function edit($id)
     {
-        //
-        return view('entreprises.edit', compact('entreprise'));
+        $entreprise = Entreprise::findOrFail($id);
+        $secteurs = Secteur::all();
+        return view('entreprises.edit', compact('entreprise', 'secteurs'));
     }
 
     /**
@@ -131,7 +146,21 @@ class EntrepriseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nom_entreprise' => 'required|string|max:255',
+            'sigle' => 'required|string|max:255',
+            'numero_entreprise' => 'required|string|max:255',
+            'mail_entreprise' => 'required|email|max:255',
+            'logo_entreprise' => 'nullable|string|max:255', // Assurez-vous que c'est une URL valide
+            'slogan' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'id_secteur' => 'required|string|max:255',
+        ]);
+
+        $entreprise = Entreprise::findOrFail($id);
+        $entreprise->update($request->all());
+
+        return redirect()->route('entreprises.index')->with('success', 'Company updated successfully.');
     }
 
     /**

@@ -54,6 +54,7 @@
 </div>
 
 
+
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
@@ -61,25 +62,50 @@
     <div class="container marketing">
 
       <!-- Three columns of text below the carousel -->
-      <div class="row flex-nowrap overflow-auto">
-        <div class="col-lg-4">
+      <div class="row flex-nowrap overflow-auto" >
+        {{-- <div class="col-lg-4">
           <img src="{{ asset("images/e3.jpg") }}" class="bd-placeholder-img" width="130px" height="130px" alt="..." style="background-size: cover;background-repeat: no-repeat;">
 
           <h2>Heading</h2>
           <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
           <p><a class="btn btn-secondary" href="#">View details »</a></p>
-        </div><!-- /.col-lg-4 -->
+        </div><!-- /.col-lg-4 --> --}}
 
 
-        @foreach($entreprises  as $e)
-        <div class="col-lg-4">
-            <img src="{{$e->logo_entreprise}}" class="bd-placeholder-img" width="130px" height="130px" alt="..." style="background-size: cover;background-repeat: no-repeat;">
+        <div id="entreprisesCarousel" class="carousel carousel-dark slide" data-ride="carousel" >
+            <div class="carousel-inner">
+                @foreach($entreprises->chunk(3) as $index => $chunk)
+                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                        <div class="d-flex justify-content-center">
+                            @foreach($chunk as $e)
+                                <div class="card mx-2" style="min-width: 18rem; max-width: 18rem;">
+                                    <img src="{{ $e->logo_entreprise }}" class="card-img-top" alt="{{ $e->nom_entreprise }}" style="height: 130px; object-fit: cover;">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title text-truncate" style="max-height: 2.4em; line-height: 1.2em; overflow: hidden;">
+                                            {{ $e->sigle }} : {{ $e->nom_entreprise }}
+                                        </h5>
+                                        <p class="card-text flex-grow-1 text-truncate" style="max-height: 4.8em; line-height: 1.2em; overflow: hidden;">
+                                            {{ $e->description }}
+                                        </p>
+                                        <a href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}" class="btn btn-secondary mt-auto">Voir les détails »</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#entreprisesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#entreprisesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+        </div>
 
-            <h2>{{$e->sigle}} : {{$e->nom_entreprise}}</h2>
-            <p>{{$e->description}}</p>
-            <p><a class="btn btn-secondary" href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}">Voir les details »</a></p>
-          </div><!-- /.col-lg-4 -->
-        @endforeach
+
       </div><!-- /.row -->
 
 
@@ -139,3 +165,4 @@
 
 
 @endsection
+

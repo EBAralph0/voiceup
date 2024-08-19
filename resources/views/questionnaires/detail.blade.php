@@ -58,7 +58,7 @@
                             @else
                                 <ul class="d-flex list-group-flush">
                                     @foreach($question->choix as $choix)
-                                        <li class="card bg-dark text-white ml-2 p-1">{{ $choix->text }}</li>
+                                        <li class="card bg-dark text-white me-2 p-1">{{ $choix->text }}</li>
                                     @endforeach
                                 </ul>
                             @endif

@@ -6,6 +6,7 @@ use App\Models\Demandes;
 use App\Models\Questionnaire;
 use App\Models\Question;
 use App\Models\Avis;
+use App\Models\Secteur;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\QuestionnaireController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AvisController;
+use App\Http\Controllers\SecteurController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +50,15 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+        Route::resource('secteurs', SecteurController::class);
+        Route::resource('users', UserController::class)->except(['show']);
+        Route::put('/users/{id}/block', [UserController::class, 'block'])->name('users.block');
+        Route::put('/users/{id}/unblock', [UserController::class, 'unblock'])->name('users.unblock');
+
+    });
+
     Route::get('/demandes', [DemandeController::class, 'index'])->name('demandes.index');
     Route::get('/demandes/create', [DemandeController::class, 'create'])->name('demandes.create');
     Route::post('/demandes', [DemandeController::class, 'store'])->name('demandes.store');
@@ -54,7 +66,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/demandes/reject/{id}', [DemandeController::class, 'reject'])->name('demandes.reject');
 
     Route::get('/avis/{id}/avis/create', [AvisController::class, 'create'])->name('avis.create');
+    Route::get('/get_all_avis', [AvisController::class, 'get_all'])->name('avis.get_all');
     Route::post('/avis/{id}/avis', [AvisController::class, 'store'])->name('avis.store');
+    Route::get('/analyze-avis/{id}', [AvisController::class, 'analyzeAvis'])->name('avis.analyze');
+
+
+
 
     Route::get('/questionnaires/create/{entreprise_id}', [QuestionnaireController::class, 'create'])->name('questionnaires.create');
     Route::post('/questionnaires/{entreprise_id}', [QuestionnaireController::class, 'store'])->name('questionnaires.store');

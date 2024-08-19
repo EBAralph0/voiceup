@@ -18,18 +18,16 @@
     <table class="table" id="liste_demande">
         <thead class="mb-2" style="border-style:none;">
             <tr>
-                <th>ID</th>
-                <th>Nom de l'entreprise</th>
-                <th>Utilisateur</th>
-                <th>Date de Création</th>
-                <th>Statut</th>
+                <th>Company name</th>
+                <th>Created by</th>
+                <th>Date</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($demandes as $demande)
                 <tr class="perso_tr">
-                    <td>{{ $demande->id }}</td>
                     <td>{{ $demande->nom_entreprise }}</td>
                     <td>{{ $demande->user->name }}</td>
                     <td>{{ $demande->created_at }}</td>
@@ -41,7 +39,7 @@
                         <td>ok</td>
                     @elseif ($demande->statut == "waiting")
                         <td><div class="">Waiting</div></td>
-                        <td><a href="{{ route('demandes.show', $demande->id) }}" class="">Consulter</a></td>
+                        <td><a href="{{ route('demandes.show', $demande->id) }}" class="btn btn-primary"><i class="bi bi-pencil">Consulter</i></a></td>
                     @endif
                 </tr>
             @endforeach
