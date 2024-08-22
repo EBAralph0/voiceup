@@ -34,7 +34,7 @@
             <label for="text">Question</label>
             <textarea name="text" id="text" class="form-control" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Add Question</button>
+        <button type="submit" class="btn btn-primary mt-1">Add Question</button>
     </form>
 
 
@@ -42,55 +42,102 @@
     @if($questionnaire->questions->isEmpty())
         <p>No questions available for this questionnaire.</p>
     @else
-        <div class="list-group" style="height:246px;overflow-y:scroll;">
-            @foreach($questionnaire->questions as $question)
-                <div class="col mb-1">
-                    <div class="card">
-                        <div class="card-body">
-                            {{-- <a href="{{ route('questions.detail', $question->id) }}" class="btn btn-primary ">i</a> --}}
-                            <div class="row position-absolute top-0 end-0 m-2">
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#AddChoixModalCenter{{$question->id}}">+</button>
-                            </div>
-                            <h5 class="card-title">#{{$question->id}}: {{ $question->text }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Choices</h6>
-                            @if($question->choix->isEmpty())
-                                <p>No choices available for this question.</p>
-                            @else
-                                <ul class="d-flex list-group-flush">
-                                    @foreach($question->choix as $choix)
-                                        <li class="card bg-dark text-white me-2 p-1">{{ $choix->text }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
+    <div class="list-group" style="height:256px;overflow-y:scroll;">
+        @foreach($questionnaire->questions as $question)
+            <div class="col mb-1">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row position-absolute top-0 end-0 m-2">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddChoixModalCenter{{$question->id}}">+</button>
                         </div>
+                        <h5 class="card-title">#{{$question->id}}: {{ $question->text }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Choices</h6>
+                        @if($question->choix->isEmpty())
+                            <p>No choices available for this question.</p>
+                        @else
+                            <ul class="d-flex list-group-flush">
+                                @foreach($question->choix as $choix)
+                                    <li class="text-white me-3 p-1">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="top: 0;">
+                                            {{ $choix->text }}
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li class="dropdown-item">
+                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#EditChoixModalCenter{{$choix->id}}">
+                                                    <i class="bi bi-pencil-fill">Edit</i>
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li class="dropdown-item">
+                                                <form action="{{ route('choix.destroy', $choix->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this choice?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash3-fill">Delete</i>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Edit Modal moved outside of the list item -->
+                                    <div class="modal fade" id="EditChoixModalCenter{{$choix->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form action="{{ route('choix.update', $choix->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalCenterTitle">Edit Choice</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="text">Choice Text</label>
+                                                            <input type="text" name="text" id="text" class="form-control" value="{{ $choix->text }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
-                <div class="modal fade" id="AddChoixModalCenter{{$question->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                      <div class="modal-content">
+            </div>
+
+            <!-- Add Modal -->
+            <div class="modal fade" id="AddChoixModalCenter{{$question->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
                         <form action="{{ route('choix.store', $question->id) }}" method="post">
                             @csrf
                             <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Add a choice for this question #{{$question->id}}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Add a choice for this question #{{$question->id}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
                                 <label for="">Choice name</label>
                                 <input class="form-control" type="text" name="text">
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary">Save</button>
-                              </div>
+                            </div>
                         </form>
-                      </div>
                     </div>
                 </div>
-            @endforeach
+            </div>
+        @endforeach
+    </div>
 
-        </div>
+
     @endif
 </div>
 @endsection

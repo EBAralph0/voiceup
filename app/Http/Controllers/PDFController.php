@@ -16,7 +16,6 @@ class PDFController extends Controller
     {
         try {
             $questionnaire = Questionnaire::findOrFail($id);
-
             // $charts est un tableau contenant les images base64
             $charts = $request->input('charts');
             $data = $this->getQuestionnaireData($id);
@@ -40,7 +39,6 @@ class PDFController extends Controller
         }
     }
 
-
     protected function getQuestionnaireData($id)
     {
         $questionnaire = Questionnaire::with('questions.choix')->findOrFail($id);
@@ -49,7 +47,7 @@ class PDFController extends Controller
         foreach ($questionnaire->questions as $question) {
             $questionData = [
                 'id' => $question->id,
-                'question' => $question->intitule,
+                'question' => $question->text,
                 'data' => [],
             ];
 
@@ -59,16 +57,8 @@ class PDFController extends Controller
                     'count' => $choix->responses()->count(),
                 ];
             }
-
             $data[] = $questionData;
         }
-
         return $data;
     }
-
-
-
-
-
-
 }

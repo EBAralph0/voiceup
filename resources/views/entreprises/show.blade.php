@@ -29,7 +29,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Reject the request ?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                         </div>
@@ -37,7 +37,7 @@
                             <i class="bi bi-exclamation-triangle"></i>
                         </div>
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <a href="{{ route('demandes.reject', $demande->id) }}"class="btn btn-danger">Reject anyway</a>
                         </div>
                     </div>

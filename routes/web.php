@@ -17,6 +17,7 @@ use App\Http\Controllers\AvisController;
 use App\Http\Controllers\SecteurController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\ChoixController;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +91,12 @@ Route::middleware(['auth'])->group(function () {
     // Route pour soumettre les réponses
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
+
+
+    Route::get('/choix/{id}/edit', [ChoixController::class, 'edit'])->name('choix.edit');
+    Route::put('/choix/{id}', [ChoixController::class, 'update'])->name('choix.update');
+    Route::delete('/choix/{id}', [ChoixController::class, 'destroy'])->name('choix.destroy');
+
 
 
 });
