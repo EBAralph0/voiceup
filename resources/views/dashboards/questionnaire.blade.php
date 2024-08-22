@@ -2,8 +2,15 @@
 
 @section('content')
 <div class="container">
-    <h2>{{ $questionnaire->intitule }}</h2>
-    <p>{{ $questionnaire->description }}</p>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ $questionnaire->intitule }}</h2>
+            <button id="generatePdfBtn" class="btn btn-danger"><i class="bi bi-file-earmark-arrow-down">Export PDF</i></button>
+        </div>
+        <p>{{ $questionnaire->description }}</p>
+
+        <!-- Le reste du contenu du dashboard -->
+    </div>
 
     @foreach($data as $questionData)
         <div class="card mb-5">
@@ -38,6 +45,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
     @foreach($data as $questionData)
         const barCtx{{ $questionData['id'] }} = document.getElementById('bar-chart-{{ $questionData['id'] }}').getContext('2d');
@@ -202,5 +210,41 @@ document.addEventListener('DOMContentLoaded', function () {
         plugins: [ChartDataLabels]
     });
 });
+</script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function () {
+        function getBase64Image(chart) {
+            console.log("Gendsgfgdfgfded");
+            return chart.toDataURL('image/png');
+        }
+
+        document.getElementById('generatePdfBtn').addEventListener('click', function () {
+            console.log("Generate PDF button clicked");
+            var charts = [];
+            document.querySelectorAll('canvas').forEach(function (canvas) {
+                var chartBase64 = getBase64Image(canvas);
+                charts.push(chartBase64);
+            });
+
+            fetch('/questionnaire/{{ $questionnaire->id }}/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    charts: charts
+                })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'questionnaire_report.pdf';
+                link.click();
+            })
+            .catch(error => console.error('Error generating PDF:', error));
+        });
+    });
 </script>
 @endsection

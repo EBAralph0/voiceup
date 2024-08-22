@@ -16,6 +16,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AvisController;
 use App\Http\Controllers\SecteurController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PDFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
  Route::resource('entreprises', EntrepriseController::class)->except(['create', 'store']);
 
+
+ Route::post('/questionnaire/{id}/generate-pdf', [PDFController::class, 'generatePDF'])->name('generate.pdf');
+ Route::get('/search-companies', [EntrepriseController::class, 'search'])->name('companies.search');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -87,6 +91,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
 
+
 });
-Route::get('/search-companies', [EntrepriseController::class, 'search'])->name('companies.search');
 
