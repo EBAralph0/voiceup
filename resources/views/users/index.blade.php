@@ -51,8 +51,7 @@
                                     @method('PUT')
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="deleteModalLabel">Block user {{ $user->name }}</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                         </button>
                                     </div>
                                     <div class="modal-body">
@@ -79,8 +78,7 @@
                                     @method('PUT')
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="deleteModalLabel">Unblock user {{ $user->name }}</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                         </button>
                                     </div>
                                     <div class="modal-body">

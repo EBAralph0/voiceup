@@ -32,8 +32,7 @@
                                         @method('PUT')
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editModalLabel">Edit Secteur</h5>
-                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                             </button>
                                         </div>
                                         <div class="modal-body">
@@ -63,8 +62,7 @@
                                         @method('DELETE')
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="deleteModalLabel">Delete Secteur</h5>
-                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                             </button>
                                         </div>
                                         <div class="modal-body">
@@ -94,8 +92,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">Add Sector</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
                 <div class="modal-body">

@@ -72,7 +72,7 @@
         </div><!-- /.col-lg-4 --> --}}
 
 
-        <div id="entreprisesCarousel" class="carousel carousel-dark slide" data-ride="carousel" >
+        <div id="entreprisesCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="3000">
             <div class="carousel-inner">
                 @foreach($entreprises->chunk(3) as $index => $chunk)
                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
@@ -87,7 +87,7 @@
                                         <p class="card-text flex-grow-1 text-truncate" style="max-height: 4.8em; line-height: 1.2em; overflow: hidden;">
                                             {{ $e->description }}
                                         </p>
-                                        <a href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}" class="btn btn-secondary mt-auto"><i class="bi bi-eye-fill">see details</i></a>
+                                        <a href="{{ route('entreprises.list_questionnaire', $e->id_entreprise) }}" class="btn btn-secondary mt-auto"><i class="bi bi-eye-fill"></i> see details</a>
                                     </div>
                                 </div>
                             @endforeach
@@ -98,11 +98,11 @@
             <button class="carousel-control-prev" type="button" data-bs-target="#entreprisesCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#entreprisesCarousel" data-bs-slide="next">
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#entreprisesCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
-              </button>
+            </button>
         </div>
 
 
@@ -160,7 +160,7 @@
     <!-- FOOTER -->
     <footer class="container">
       <p class="float-end"><a href="#">Back to top</a></p>
-      <p>© 2017–2021 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+      <p>© 2019–2024 ACEP MANAGEMENT, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
     </footer>
 
 
