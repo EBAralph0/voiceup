@@ -3,14 +3,19 @@
 @section('content')
 <div class="d-flex mt-4">
     <div class="container">
-        <h2>{{ $entreprise->nom_entreprise }}</h2>
-        <a href="{{ route('avis.analyze',$entreprise->id_entreprise)}}" class="btn btn-primary">Voir les suggestions d'ameliorations</a>
+        <div class="d-flex justify-content-between">
+            <h2>{{ $entreprise->nom_entreprise }}</h2>
+            <a href="{{ route('avis.analyze',$entreprise->id_entreprise)}}" class="btn btn-primary"><i class="bi bi-robot"></i></a>
+        </div>
         <p><strong>Acronym :</strong> {{ $entreprise->sigle }}</p>
         <p><strong>Company number :</strong> {{ $entreprise->numero_entreprise }}</p>
         <p><strong>Email :</strong> {{ $entreprise->mail_entreprise }}</p>
         <p><strong>Slogan :</strong> {{ $entreprise->slogan }}</p>
         <p><strong>Description :</strong> {{ $entreprise->description }}</p>
         <p><strong>Sector :</strong> {{ $entreprise->secteur->nom_secteur }}</p>
+        <p><strong>Date d'anniversaire :</strong> {{ $entreprise->date_anniversaire ? \Carbon\Carbon::parse($entreprise->date_anniversaire)->format('d/m/Y') : 'N/A' }}</p>
+        <p><strong>Siège social :</strong> {{ $entreprise->siege_social }}</p>
+        <p><strong>Nombre d'employés :</strong> {{ $entreprise->nb_employes_interval }}</p>
     </div>
     <div class="vr"></div>
     <div class="container">

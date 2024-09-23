@@ -99,7 +99,7 @@ height: 100%;
                 </div>
             @endif
         @endauth
-        <div id="content" @auth @if (Auth::user()->role === 'admin')style="margin-left: 250px;" @endif @endauth>
+        <div id="content" @auth @if (Auth::user()->role === 'admin')style="margin-left: 250px;" @endif @endauth  style="background-color: white">
             <main>
                 @yield('content')
             </main>

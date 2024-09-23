@@ -58,6 +58,30 @@
                 @endforeach
             </select>
         </div>
+        <!-- Date d'anniversaire -->
+        <div class="form-group">
+            <label for="date_anniversaire">Date d'anniversaire</label>
+            <input type="date" name="date_anniversaire" id="date_anniversaire" class="form-control">
+        </div>
+
+        <!-- Siège social -->
+        <div class="form-group">
+            <label for="siege_social">Siège social</label>
+            <input type="text" name="siege_social" id="siege_social" class="form-control">
+        </div>
+
+        <!-- Nombre d'employés (intervalle) -->
+        <div class="form-group">
+            <label for="nb_employes_interval">Nombre d'employés</label>
+            <select name="nb_employes_interval" id="nb_employes_interval" class="form-control">
+                <option value="">Select Interval</option>
+                <option value="1-10">1-10 employés</option>
+                <option value="11-50">11-50 employés</option>
+                <option value="51-200">51-200 employés</option>
+                <option value="201-500">201-500 employés</option>
+                <option value="501+">501+ employés</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Créer l'entreprise</button>
     </form>
     <span id="loadingIndicatorEntreprise" class="loading-indicator" style="display: none;">

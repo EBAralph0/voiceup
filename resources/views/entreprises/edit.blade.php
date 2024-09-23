@@ -61,7 +61,33 @@
                 <textarea name="description" id="description" class="form-control" rows="4">{{ $entreprise->description }}</textarea>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Update Company</button>
+        <div class="row">
+            <!-- Date d'anniversaire -->
+            <div class="form-group col-md-4">
+                <label for="date_anniversaire">Date d'anniversaire</label>
+                <input type="date" name="date_anniversaire" id="date_anniversaire" class="form-control" value="{{ $entreprise->date_anniversaire}}">
+            </div>
+
+            <!-- Siège social -->
+            <div class="form-group col-md-4">
+                <label for="siege_social">Siège social</label>
+                <input type="text" name="siege_social" id="siege_social" class="form-control" value="{{ $entreprise->siege_social }}">
+            </div>
+
+            <!-- Nombre d'employés (intervalle) -->
+            <div class="form-group col-md-4">
+                <label for="nb_employes_interval">Nombre d'employés</label>
+                <select name="nb_employes_interval" id="nb_employes_interval" class="form-control">
+                    <option value="" {{ $entreprise->nb_employes_interval == '' ? 'selected' : '' }}>Select Interval</option>
+                    <option value="1-10" {{ $entreprise->nb_employes_interval == '1-10' ? 'selected' : '' }}>1-10 employés</option>
+                    <option value="11-50" {{ $entreprise->nb_employes_interval == '11-50' ? 'selected' : '' }}>11-50 employés</option>
+                    <option value="51-200" {{ $entreprise->nb_employes_interval == '51-200' ? 'selected' : '' }}>51-200 employés</option>
+                    <option value="201-500" {{ $entreprise->nb_employes_interval == '201-500' ? 'selected' : '' }}>201-500 employés</option>
+                    <option value="501+" {{ $entreprise->nb_employes_interval == '501+' ? 'selected' : '' }}>501+ employés</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Update Company</button>
     </form>
 
     <!-- Loading Indicator -->

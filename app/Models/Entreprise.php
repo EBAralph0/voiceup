@@ -7,49 +7,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entreprise extends Model
 {
-    //use HasFactory;'
-
-    //use Sortable;
-
     protected $primaryKey = 'id_entreprise';
     public $incrementing = false;
 
-    protected $fillable =["nom_entreprise","sigle","numero_entreprise","mail_entreprise","logo_entreprise","created_by_id","slogan","description","id_secteur","proprietaire_id"];
-
-    public $sortable = [
-        "nom_entreprise",
-        "sigle",
-        "numero_entreprise",
-        "mail_entreprise",
-        "logo_entreprise",
-        "created_by_id",
-        "slogan",
-        "description",
-        "id_secteur",
-        "proprietaire_id"
+    protected $fillable = [
+        "nom_entreprise", "sigle", "numero_entreprise", "mail_entreprise",
+        "logo_entreprise", "created_by_id", "slogan", "description",
+        "id_secteur", "proprietaire_id", "date_anniversaire", "siege_social", "nb_employes_interval"
     ];
 
     public $timestamps = false;
 
-     // Relation avec User
-     public function user()
-     {
-         return $this->belongsTo(User::class, 'created_by_id');
-     }
+    // Relations
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by_id');
+    }
 
-     // Relation avec User
-     public function proprietaire()
-     {
-         return $this->belongsTo(User::class, 'proprietaire_id');
-     }
+    public function proprietaire()
+    {
+        return $this->belongsTo(User::class, 'proprietaire_id');
+    }
 
-     // Relation avec Secteur
-     public function secteur()
-     {
-         return $this->belongsTo(Secteur::class, 'id_secteur');
-     }
+    public function secteur()
+    {
+        return $this->belongsTo(Secteur::class, 'id_secteur');
+    }
 
-     public function questionnaires()
+    public function questionnaires()
     {
         return $this->hasMany(Questionnaire::class, 'entreprise_id');
     }
@@ -59,3 +44,4 @@ class Entreprise extends Model
         return $this->hasMany(Avis::class, 'entreprise_ids', 'id_entreprise');
     }
 }
+

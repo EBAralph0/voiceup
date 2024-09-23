@@ -60,6 +60,9 @@ class EntrepriseController extends Controller
             'slogan' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'id_secteur' => 'required|string|max:255',
+            'date_anniversaire' => 'nullable|date',
+            'siege_social' => 'nullable|string',
+            'nb_employes_interval' => 'nullable|in:1-10,11-50,51-200,201-500,501+',
         ]);
 
         // Créer une nouvelle instance de Entreprise
@@ -155,6 +158,9 @@ class EntrepriseController extends Controller
             'slogan' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'id_secteur' => 'required|string|max:255',
+            'date_anniversaire' => 'nullable|date',
+            'siege_social' => 'nullable|string',
+            'nb_employes_interval' => 'nullable|in:1-10,11-50,51-200,201-500,501+',
         ]);
 
         $entreprise = Entreprise::findOrFail($id);

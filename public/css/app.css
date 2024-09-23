@@ -615,3 +615,15 @@ div.table-responsive > div.dt-container > div.row > div[class^=col-]:last-child 
 #searchResults {
     z-index: 1000!important; /* Résultats de recherche au-dessus de tout */
 }
+
+ /* Agrandir les boutons radio */
+ .enlarged-radio {
+    transform: scale(1.5);
+    margin-right: 10px;
+}
+
+/* Centrage et mise en forme */
+.rounded-circle {
+    border: 2px solid #ddd;
+    padding: 5px;
+}
