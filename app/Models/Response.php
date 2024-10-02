@@ -13,7 +13,8 @@ class Response extends Model
         'questionnaire_id',
         'question_id',
         'choix_id',
-        'user_id'
+        'user_id',
+        'text_answer',
     ];
 
     public function questionnaire()

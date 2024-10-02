@@ -4,38 +4,67 @@
 <div class="container">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <h2>{{ $questionnaire->intitule }}</h2>
-            <button id="generatePdfBtn" class="btn btn-danger"><i class="bi bi-file-earmark-arrow-down">Export PDF</i></button>
+            <h2>{{ $questionnaire->intitule }} : {{count($data)}} user(s)</h2>
+            <div class="d-flex">
+                <button id="generatePdfBtn" class="btn btn-danger"><i class="bi bi-file-earmark-arrow-down">Export PDF</i></button>
+                <a href="{{ route('questionnaire.exportExcel', $questionnaire->id) }}" class="btn btn-success ms-2"><i class="bi bi-file-earmark-spreadsheet-fill"> Export Excel</i></a>
+            </div>
         </div>
         <p>{{ $questionnaire->description }}</p>
-
-        <!-- Le reste du contenu du dashboard -->
     </div>
 
     @foreach($data as $questionData)
-        <div class="card mb-5">
-            <div class="card-header">
-                {{ $questionData['question'] }}
+        @if($questionData['type'] === 'textanswer')
+            <!-- Afficher les réponses textuelles dans une table -->
+            <div class="card mb-5">
+                <div class="card-header">
+                    {{ $questionData['question'] }} : <strong>{{ $questionData['responses_count'] }} responses</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($questionData['data']['responses'] as $index => $response)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $response }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-body">
-                <blockquote class="blockquote mb-0 d-flex" style="justify-content: space-between">
-                    <div style="width: 256px;height: 256px;">
-                        <canvas id="bar-chart-{{ $questionData['id'] }}"></canvas>
-                    </div>
-                    <div style="width: 256px;height: 256px;">
-                        <canvas id="doughnut-chart-{{ $questionData['id'] }}"></canvas>
-                    </div>
-                    <div style="width: 256px;height: 256px;">
-                        <canvas id="pie-chart-{{ $questionData['id'] }}"></canvas>
-                    </div>
-                </blockquote>
+        @else
+            <!-- Affichage habituel des graphiques pour les questions à choix unique ou multiple -->
+            <div class="card mb-5">
+                <div class="card-header">
+                    {{ $questionData['question'] }} : <strong>{{ $questionData['responses_count'] }} responses</strong>
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0 d-flex" style="justify-content: space-between">
+                        <div style="width: 256px;height: 256px;">
+                            <canvas id="bar-chart-{{ $questionData['id'] }}"></canvas>
+                        </div>
+                        <div style="width: 256px;height: 256px;">
+                            <canvas id="doughnut-chart-{{ $questionData['id'] }}"></canvas>
+                        </div>
+                        <div style="width: 256px;height: 256px;">
+                            <canvas id="pie-chart-{{ $questionData['id'] }}"></canvas>
+                        </div>
+                    </blockquote>
+                </div>
             </div>
-        </div>
+        @endif
     @endforeach
 
     <div class="mt-5">
         <h3>Frequency of Responses</h3>
-        <canvas id="histogram-chart"></canvas>
+        <canvas id="frequency-chart"></canvas>
     </div>
 </div>
 @endsection
@@ -56,8 +85,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Responses',
                     data: @json(array_column($questionData['data'], 'count')),
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(144, 30, 40, 0.2)',
+                        'rgba(99, 159, 10, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(144, 30, 40, 1)',
+                        'rgba(99, 159, 10, 1)'
+                    ],
                     borderWidth: 1
                 }]
             },
@@ -134,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: @json(array_column($questionData['data'], 'choix')),
                 datasets: [{
-                    label: 'Responses',
+                    label: '{{ $questionData['question'] }} Responses', // Utilisation d'un label dynamique
                     data: @json(array_column($questionData['data'], 'count')),
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -164,9 +211,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     datalabels: {
                         display: true,
                         color: 'black',
-                        formatter: function(value) {
-                            if(value != 0){
-                            return value;}
+                        formatter: function(value, context) {
+                            // Calcul du pourcentage
+                            const total = context.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                            const percentage = (value / total * 100).toFixed(2) + '%';
+                            return percentage; // Afficher le pourcentage
                         }
                     }
                 }
@@ -175,40 +224,50 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     @endforeach
 
-    const histogramCtx = document.getElementById('histogram-chart').getContext('2d');
-    new Chart(histogramCtx, {
-        type: 'bar',
-        data: {
-            labels: @json(array_keys($frequencyData)),
-            datasets: [{
-                label: 'Responses Frequency',
-                data: @json(array_values($frequencyData)),
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            plugins: {
-                datalabels: {
-                    display: true,
-                    color: 'black',
-                    align: 'end',
-                    anchor: 'end',
-                    formatter: function(value) {
-                        if(value != 0){
-                        return value;}
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    console.log("sduofosdfjs")
+    const frequencyCtx = document.getElementById('frequency-chart').getContext('2d');
+
+    if (frequencyCtx) { // Vérifiez que le canvas existe avant d'initialiser le graphique
+        new Chart(frequencyCtx, {
+            type: 'line', // Remplacement par une courbe 📉
+            data: {
+                labels: @json(array_keys($frequencyData)),
+                datasets: [{
+                    label: 'Responses Frequency',
+                    data: @json(array_values($frequencyData)),
+                    borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la ligne
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Couleur de fond
+                    borderWidth: 2,
+                    fill: true, // Remplir sous la courbe
+                    tension: 0.3 // Adoucir la courbe
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        align: 'end',
+                        anchor: 'end',
+                        formatter: function(value) {
+                            if (value != 0) {
+                                return value;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
+            plugins: [ChartDataLabels]
+        });
+    }
 });
 </script>
 <script defer>

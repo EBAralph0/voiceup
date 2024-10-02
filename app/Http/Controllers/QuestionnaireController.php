@@ -5,6 +5,9 @@ use App\Models\Entreprise;
 use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\QuestionnaireExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class QuestionnaireController extends Controller
 {
@@ -42,6 +45,13 @@ class QuestionnaireController extends Controller
     {
         $questionnaire = Questionnaire::with('questions.choix')->findOrFail($id);
         return view('questionnaires.questions', compact('questionnaire'));
+    }
+
+    public function exportExcel($id)
+    {
+        $questionnaire = Questionnaire::findOrFail($id);
+        $fileName = $questionnaire->intitule . '.xlsx'; // Nom dynamique basé sur le titre du questionnaire
+        return Excel::download(new QuestionnaireExport($questionnaire->id), $fileName);
     }
 
 }

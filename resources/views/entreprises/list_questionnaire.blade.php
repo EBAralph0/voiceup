@@ -8,6 +8,9 @@
 </svg>
 
 <div class="container mt-4">
+    <a href="{{ url("/")}}" class="btn btn-secondary me-2">
+        <i class="bi bi-arrow-left-circle"></i> Back
+    </a>
     <!-- Logo de l'entreprise arrondi et centré -->
     <div class="text-center">
         <img src="{{ $entreprise->logo_entreprise }}" class="rounded-circle" alt="Logo de {{ $entreprise->nom_entreprise }}" style="width: 150px; height: 150px; object-fit: cover;">

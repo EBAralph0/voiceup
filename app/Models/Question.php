@@ -9,16 +9,19 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['questionnaire_id', 'text'];
+    protected $fillable = ['questionnaire_id', 'text', 'type'];
 
     public function questionnaire()
     {
         return $this->belongsTo(Questionnaire::class);
     }
-    
+
     public function choix()
     {
         return $this->hasMany(Choix::class);
     }
-
+    public function responses()
+    {
+        return $this->hasMany(Response::class, 'question_id');
+    }
 }

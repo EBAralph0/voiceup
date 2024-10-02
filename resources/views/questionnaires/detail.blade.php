@@ -28,13 +28,21 @@
         </div>
     @endif
 
-    <form action="{{ route('questions.store', $questionnaire->id) }}" method="POST">
+    <form action="{{ route('questions.store', $questionnaire->id) }}" method="POST" class="container shadow rounded pb-2">
         @csrf
         <div class="form-group">
             <label for="text">Question</label>
             <textarea name="text" id="text" class="form-control" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary mt-1">Add Question</button>
+        <div class="form-group mt-3">
+            <label for="type">Question type</label>
+            <select name="type" id="type" class="form-control" required>
+                <option value="onechoice">Single choice (Radio)</option>
+                <option value="multiplechoice">Multiples choices (Checkbox)</option>
+                <option value="textanswer">Text answer</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Add Question</button>
     </form>
 
 
@@ -47,66 +55,70 @@
             <div class="col mb-1">
                 <div class="card">
                     <div class="card-body">
+                        @if($question->type != 'textanswer')
                         <div class="row position-absolute top-0 end-0 m-2">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddChoixModalCenter{{$question->id}}">+</button>
                         </div>
+                        @endif
                         <h5 class="card-title">#{{$question->id}}: {{ $question->text }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Choices</h6>
-                        @if($question->choix->isEmpty())
-                            <p>No choices available for this question.</p>
-                        @else
-                            <ul class="d-flex list-group-flush">
-                                @foreach($question->choix as $choix)
-                                    <li class="text-white me-3 p-1">
-                                        <button class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="top: 0;">
-                                            {{ $choix->text }}
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li class="dropdown-item">
-                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#EditChoixModalCenter{{$choix->id}}">
-                                                    <i class="bi bi-pencil-fill">Edit</i>
-                                                </button>
-                                            </li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li class="dropdown-item">
-                                                <form action="{{ route('choix.destroy', $choix->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this choice?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-trash3-fill">Delete</i>
+                        @if($question->type != 'textanswer')
+                            <h6 class="card-subtitle mb-2 text-muted">Choices</h6>
+                            @if($question->choix->isEmpty())
+                                <p>No choices available for this question.</p>
+                            @else
+                                <ul class="d-flex list-group-flush">
+                                    @foreach($question->choix as $choix)
+                                        <li class="text-white me-3 p-1">
+                                            <button class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="top: 0;">
+                                                {{ $choix->text }}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item">
+                                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#EditChoixModalCenter{{$choix->id}}">
+                                                        <i class="bi bi-pencil-fill">Edit</i>
                                                     </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li class="dropdown-item">
+                                                    <form action="{{ route('choix.destroy', $choix->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this choice?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="bi bi-trash3-fill">Delete</i>
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </li>
 
-                                    <!-- Edit Modal moved outside of the list item -->
-                                    <div class="modal fade" id="EditChoixModalCenter{{$choix->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <form action="{{ route('choix.update', $choix->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalCenterTitle">Edit Choice</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="form-group">
-                                                            <label for="text">Choice Text</label>
-                                                            <input type="text" name="text" id="text" class="form-control" value="{{ $choix->text }}" required>
+                                        <!-- Edit Modal moved outside of the list item -->
+                                        <div class="modal fade" id="EditChoixModalCenter{{$choix->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('choix.update', $choix->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalCenterTitle">Edit Choice</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary">Update</button>
-                                                    </div>
-                                                </form>
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label for="text">Choice Text</label>
+                                                                <input type="text" name="text" id="text" class="form-control" value="{{ $choix->text }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </ul>
+                                    @endforeach
+                                </ul>
+                            @endif
                         @endif
                     </div>
                 </div>

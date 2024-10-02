@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "barryvdh/laravel-dompdf": "^3.0",
+        "doctrine/dbal": "^3.0",
         "google/cloud-language": "^0.32.7",
         "google/cloud-vision": "^1.9",
         "guzzlehttp/guzzle": "^7.2",
@@ -15,6 +16,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.5",
+        "maatwebsite/excel": "^3.1",
         "mckenziearts/laravel-notify": "^2.5",
         "openai-php/laravel": "^0.10.1",
         "reliese/laravel": "^1.3",

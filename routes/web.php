@@ -51,6 +51,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
  Route::post('/questionnaire/{id}/generate-pdf', [PDFController::class, 'generatePDF'])->name('generate.pdf');
+ Route::get('/questionnaire/{id}/export-excel', [QuestionnaireController::class, 'exportExcel'])->name('questionnaire.exportExcel');
+
  Route::get('/search-companies', [EntrepriseController::class, 'search'])->name('companies.search');
 
 
