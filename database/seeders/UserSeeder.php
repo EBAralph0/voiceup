@@ -29,5 +29,13 @@ class UserSeeder extends Seeder
             'password' => bcrypt('user123'),
             'proprietaire' => false, // L'utilisateur n'est pas propriétaire
         ]);
+
+        User::create([
+            'name' => 'acep',
+            'email' => 'acep@acep.com',
+            'password' => bcrypt('acep1234'),
+            'role' => 'admin',
+            'proprietaire' => false, // L'utilisateur n'est pas propriétaire
+        ]);
     }
 }

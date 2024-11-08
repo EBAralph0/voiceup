@@ -36,22 +36,21 @@
     </div>
 
     <!-- Section principale avec deux colonnes -->
-    <div class="row mt-4">
-        <!-- Colonne gauche : Liste des questionnaires avec un bouton pour voir les avis -->
-        <div class="col-md-6">
+    <div class="row mt-4 mb-2">
+        <div class="col-md-6 mb-5">
             <div class="d-flex justify-content-between align-items-center">
                 <h3>Questionnaires</h3>
-
             </div>
 
-            @if ($entreprise->questionnaires->isEmpty())
+            <!-- Vérifier si l'entreprise est associée à un secteur et si des questionnaires sont disponibles -->
+            @if ($entreprise->secteur && $entreprise->secteur->questionnaires->isEmpty())
                 <p>No questionnaire available now.</p>
             @else
                 <ul class="list-group mt-3">
-                    @foreach ($entreprise->questionnaires as $questionnaire)
+                    @foreach ($entreprise->secteur->questionnaires as $questionnaire)
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ $questionnaire->intitule }}
-                            <a href="{{ route('questionnaires.questions', $questionnaire->id) }}" class="btn btn-primary">Go</a>
+                            <a href="{{ route('questionnaires.questions', ['questionnaire' => $questionnaire->id, 'entreprise' => $entreprise->id_entreprise]) }}" class="btn btn-primary">Go</a>
                         </li>
                     @endforeach
                 </ul>
@@ -62,7 +61,7 @@
         <div class="col-md-6">
             <div class="d-flex justify-content-between align-items-center">
                 <h3>Rating statistics</h3>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAvis">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAvis">
                     See feedbacks
                 </button>
             </div>
@@ -93,7 +92,7 @@
 
     <!-- Modal pour afficher tous les avis -->
     <div class="modal fade" id="modalAvis" tabindex="-1" role="dialog" aria-labelledby="modalAvisLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalAvisLabel">{{ $entreprise->nom_entreprise }}'s comments</h5>
@@ -104,7 +103,7 @@
                         <p>Aucun avis pour cette entreprise.</p>
                     @else
                         @foreach ($entreprise->avis as $avis)
-                            <div class="card mb-3 bg-white shadow" style="border: none">
+                            <div class="card mb-3 bg-white shadow border-0"> <!-- Changed border to border-0 for better Bootstrap 5 styling -->
                                 <div class="card-body">
                                     <h5 class="card-title">Score : {{ $avis->note }} / 5</h5>
                                     <p class="card-text">{{ $avis->commentaire }}</p>
@@ -122,6 +121,40 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalAvis" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAvisLabel">{{ $entreprise->nom_entreprise }}'s comments</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if ($entreprise->avis->isEmpty())
+                        <p>Aucun avis pour cette entreprise.</p>
+                    @else
+                        @foreach ($entreprise->avis as $avis)
+                            <div class="card mb-3 bg-white shadow border-0"> <!-- Changed border to border-0 for better Bootstrap 5 styling -->
+                                <div class="card-body">
+                                    <h5 class="card-title">Score : {{ $avis->note }} / 5</h5>
+                                    <p class="card-text">{{ $avis->commentaire }}</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">By {{ $avis->user->name }} le {{ $avis->created_at->format('d/m/Y') }}</small>
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bouton flottant pour la notation -->
     <button id="rateButton" class="btn btn-warning position-fixed" style="bottom: 20px; right: 20px; border-radius: 50%;" data-bs-toggle="modal" data-bs-target="#exampleModalCenterNote">

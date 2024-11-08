@@ -29,12 +29,34 @@ class ChoixController extends Controller
                          ->with('success', 'Choice updated successfully');
     }
 
+    public function updateg(Request $request, $id)
+    {
+        $request->validate([
+            'text' => 'required|string|max:255',
+        ]);
+
+        $choix = Choix::findOrFail($id);
+        $choix->update($request->all());
+
+        return redirect()->route('secteurs.detail', $choix->question->questionnaire_id)
+                         ->with('success', 'Choice updated successfully');
+    }
+
     public function destroy($id)
     {
         $choix = Choix::findOrFail($id);
         $choix->delete();
 
         return redirect()->route('questionnaires.detail', $choix->question->questionnaire_id)
+                         ->with('success', 'Choice deleted successfully');
+    }
+
+    public function destroyg($id)
+    {
+        $choix = Choix::findOrFail($id);
+        $choix->delete();
+
+        return redirect()->route('secteurs.detail', $choix->question->questionnaire_id)
                          ->with('success', 'Choice deleted successfully');
     }
 }

@@ -576,25 +576,7 @@ div.table-responsive > div.dt-container > div.row > div[class^=col-]:last-child 
 
 
 
-#sidebar {
-    width: 250px;
-    position: fixed;
-    left: 0;
-    height: 100%;
-    z-index: 100!important;
-    overflow-x: hidden;
-    transition: all 0.3s;
-}
 
-#sidebar-wrapper {
-    padding-top: 20px;
-}
-
-#sidebar-wrapper .list-group-item-action:hover,
-#sidebar-wrapper .list-group-item-action.active {
-    background-color: #343a40!important; /* Une teinte légèrement plus claire que bg-dark */
-    color: #ffffff!important;
-}
 
 
 #content {
@@ -628,3 +610,31 @@ div.table-responsive > div.dt-container > div.row > div[class^=col-]:last-child 
     padding: 5px;
 }
 
+
+ /* Style de la sidebar */
+ .sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+}
+
+/* Bouton de fermeture pour mobile */
+.sidebar .btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Pour s'assurer que le contenu principal reste bien visible sur mobile */
+#content {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #content {
+        /* margin-left: 250px; */
+    }
+}

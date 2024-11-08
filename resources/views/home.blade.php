@@ -1,32 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container bg-white " style="max-width: 99.99%">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            {{-- <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+<div class="container bg-white p-4">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h2>Company Comparison by Sector</h2>
+            <p>Compare companies based on average ratings within each sector.</p>
+        </div>
+    </div>
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div> --}}
-            <h1 class="mt-5">Find the company here.</h1>
-            <h5 class="mt-1">You can enter a specific category instead.</h5>
-            <div class="input-group mb-3 mt-5">
-                <input type="text" class="form-control" placeholder="company name..." aria-label="Recipient's username" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button">Search</button>
-                </div>
+    @foreach ($secteurs as $secteur)
+        <div class="row mb-5">
+            <div class="col">
+                <h3>{{ $secteur['nom_secteur'] }}</h3>
+                @if ($secteur['entreprises']->isEmpty())
+                    <p>No companies available in this sector.</p>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Logo</th>
+                                    <th>Company Name</th>
+                                    <th>Average Rating</th>
+                                    <th>Number of Reviews</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($secteur['entreprises'] as $entreprise)
+                                    <tr>
+                                        <td><img src="{{ $entreprise['logo'] }}" alt="Logo of {{ $entreprise['nom'] }}" class="rounded" style="width: 50px; height: 50px;"></td>
+                                        <td>{{ $entreprise['nom'] }}</td>
+                                        <td>{{ $entreprise['averageRating'] ?? 'N/A' }} / 5</td>
+                                        <td>{{ $entreprise['avisCount'] }} review(s)</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
             </div>
         </div>
-        
-    </div>
+    @endforeach
 </div>
 @endsection

@@ -43,5 +43,10 @@ class Entreprise extends Model
     {
         return $this->hasMany(Avis::class, 'entreprise_ids', 'id_entreprise');
     }
+
+    public function averageRating()
+    {
+        return $this->avis()->avg('note');
+    }
 }
 

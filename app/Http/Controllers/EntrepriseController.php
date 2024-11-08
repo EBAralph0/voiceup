@@ -114,15 +114,19 @@ class EntrepriseController extends Controller
         return view('entreprises.show', compact('entreprise'));
     }
 
-    public function list_questionnaire($id)
+    public function list_questionnaire($id_entreprise)
     {
-        $entreprise = Entreprise::with('questionnaires')->findOrFail($id);
+        // Charger l'entreprise avec son secteur et les questionnaires associés au secteur
+        $entreprise = Entreprise::with('secteur.questionnaires')->findOrFail($id_entreprise);
+
         return view('entreprises.list_questionnaire', compact('entreprise'));
     }
 
-    public function detail($id)
+    public function detail($id_entreprise)
     {
-        $entreprise = Entreprise::with('questionnaires')->findOrFail($id);
+        // Charger l'entreprise avec son secteur et les questionnaires associés au secteur
+        $entreprise = Entreprise::with('secteur.questionnaires')->findOrFail($id_entreprise);
+
         return view('entreprises.detail', compact('entreprise'));
     }
 
@@ -149,6 +153,7 @@ class EntrepriseController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $request->validate([
             'nom_entreprise' => 'required|string|max:255',
             'sigle' => 'required|string|max:255',
@@ -167,6 +172,7 @@ class EntrepriseController extends Controller
         $entreprise->update($request->all());
 
         return redirect()->route('entreprises.index')->with('success', 'Company updated successfully.');
+
     }
 
     /**
@@ -192,5 +198,20 @@ class EntrepriseController extends Controller
         return response()->json($companies);
     }
 
+    public function compareBySector($id_secteur)
+    {
+        $secteur = Secteur::with(['entreprises.avis'])->findOrFail($id_secteur);
 
+        // Calcul de la note moyenne pour chaque entreprise
+        $entreprises = $secteur->entreprises->map(function ($entreprise) {
+            return [
+                'nom' => $entreprise->nom_entreprise,
+                'logo' => $entreprise->logo ?? '/images/default_logo.png',
+                'averageRating' => round($entreprise->averageRating(), 1),
+                'avisCount' => $entreprise->avis->count()
+            ];
+        })->sortByDesc('averageRating');
+
+        return view('entreprises.comparator', compact('secteur', 'entreprises'));
+    }
 }

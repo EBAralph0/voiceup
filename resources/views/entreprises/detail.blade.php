@@ -19,7 +19,7 @@
     </div>
     <div class="vr"></div>
     <div class="container">
-        <h3>Add some questionnaires for this company</h3>
+        <h3>Add some questions for this company</h3>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -29,6 +29,8 @@
                 </ul>
             </div>
         @endif
+
+
 
         <form id="questionnaireForm" action="{{ route('questionnaires.store', $entreprise->id_entreprise) }}" method="POST">
             @csrf

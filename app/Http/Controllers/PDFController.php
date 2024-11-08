@@ -11,28 +11,33 @@ use PDF;
 
 class PDFController extends Controller
 {
-    //
     public function generatePDF(Request $request, $id)
     {
         try {
             $questionnaire = Questionnaire::findOrFail($id);
-            // $charts est un tableau contenant les images base64
-            $charts = $request->input('charts');
+
+            // Vérifier que 'charts' contient bien des images
+            $charts = $request->input('charts', []);
+            if (empty($charts)) {
+                return response()->json(['error' => 'No chart images provided'], 400);
+            }
+
             $data = $this->getQuestionnaireData($id);
 
-            // Ajouter les images de graphiques dans $data
-            foreach ($data as $index => $questionData) {
-                $data[$index]['bar_chart'] = $charts[$index * 3] ?? null; // bar_chart image
-                $data[$index]['doughnut_chart'] = $charts[$index * 3 + 1] ?? null; // doughnut_chart image
-                $data[$index]['pie_chart'] = $charts[$index * 3 + 2] ?? null; // pie_chart image
+            // Ajouter les images base64 des graphiques aux questions
+            foreach ($data as $index => &$questionData) {
+                $questionData['bar_chart'] = $charts[$index * 3] ?? null;
+                $questionData['doughnut_chart'] = $charts[$index * 3 + 1] ?? null;
+                $questionData['pie_chart'] = $charts[$index * 3 + 2] ?? null;
             }
 
             $pdf = PDF::loadView('pdf_template', [
                 'questionnaire' => $questionnaire,
                 'data' => $data,
-            ]);
+            ])->setPaper('a4', 'portrait');
 
             return $pdf->download('questionnaire_report.pdf');
+
         } catch (\Exception $e) {
             Log::error('Error generating PDF: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to generate PDF'], 500);
@@ -42,8 +47,8 @@ class PDFController extends Controller
     protected function getQuestionnaireData($id)
     {
         $questionnaire = Questionnaire::with('questions.choix')->findOrFail($id);
-
         $data = [];
+
         foreach ($questionnaire->questions as $question) {
             $questionData = [
                 'id' => $question->id,
@@ -62,3 +67,4 @@ class PDFController extends Controller
         return $data;
     }
 }
+

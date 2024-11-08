@@ -36,12 +36,20 @@
         </div>
         <div class="form-group mt-3">
             <label for="type">Question type</label>
-            <select name="type" id="type" class="form-control" required>
+            <select name="type" id="type" class="form-control" required onchange="toggleMaxValueField()">
                 <option value="onechoice">Single choice (Radio)</option>
                 <option value="multiplechoice">Multiples choices (Checkbox)</option>
-                <option value="textanswer">Text answer</option>
+                {{-- <option value="textanswer">Text answer</option> --}}
+                <option value="numericrange">Numeric Range</option>
             </select>
         </div>
+
+        <!-- Champ max_value caché par défaut -->
+        <div class="form-group mt-3" id="max-value-field" style="display: none;">
+            <label for="max_value">Max Value</label>
+            <input type="number" name="max_value" id="max_value" class="form-control" min="1">
+        </div>
+
         <button type="submit" class="btn btn-primary mt-3">Add Question</button>
     </form>
 
@@ -55,13 +63,13 @@
             <div class="col mb-1">
                 <div class="card">
                     <div class="card-body">
-                        @if($question->type != 'textanswer')
+                        @if($question->type != 'numericrange')
                         <div class="row position-absolute top-0 end-0 m-2">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddChoixModalCenter{{$question->id}}">+</button>
                         </div>
                         @endif
                         <h5 class="card-title">#{{$question->id}}: {{ $question->text }}</h5>
-                        @if($question->type != 'textanswer')
+                        @if($question->type != 'numericrange')
                             <h6 class="card-subtitle mb-2 text-muted">Choices</h6>
                             @if($question->choix->isEmpty())
                                 <p>No choices available for this question.</p>
@@ -110,7 +118,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                            <button type="submit" class="btn btn-primary">Apply</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -152,4 +160,15 @@
 
     @endif
 </div>
+@endsection
+
+
+@section('scripts')
+<script>
+    function toggleMaxValueField() {
+        const typeSelect = document.getElementById('type');
+        const maxValueField = document.getElementById('max-value-field');
+        maxValueField.style.display = typeSelect.value === 'numericrange' ? 'block' : 'none';
+    }
+</script>
 @endsection

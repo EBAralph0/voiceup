@@ -15,6 +15,7 @@ class Response extends Model
         'choix_id',
         'user_id',
         'text_answer',
+        'numeric_answer'
     ];
 
     public function questionnaire()

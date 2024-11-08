@@ -60,9 +60,23 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::resource('secteurs', SecteurController::class);
+
         Route::resource('users', UserController::class)->except(['show']);
         Route::put('/users/{id}/block', [UserController::class, 'block'])->name('users.block');
         Route::put('/users/{id}/unblock', [UserController::class, 'unblock'])->name('users.unblock');
+
+        Route::get('/{id_secteur}/questionnaires/create', [QuestionnaireController::class, 'createForSector'])->name('secteurs.questionnaires.create');
+        Route::post('/{id_secteur}/questionnaires', [QuestionnaireController::class, 'storeForSector'])->name('secteurs.questionnaires.store');
+        Route::get('/secteurs/{id_secteur}/questionnaires', [QuestionnaireController::class, 'indexBySector'])->name('secteurs.questionnaires.index');
+        Route::put('/questionnaires/{id}', [QuestionnaireController::class, 'update'])->name('questionnaires.update');
+        Route::delete('/questionnaires/{id}', [QuestionnaireController::class, 'destroy'])->name('questionnaires.destroy');
+
+        Route::get('/questionnaires/{id_questionnaire}/detail', [SecteurController::class, 'detail'])->name('secteurs.detail');
+        Route::post('/questions/storeg/{questionnaire_id}', [QuestionController::class, 'storeg'])->name('questions.storeg');
+
+        Route::post('/choixg/store/{question_id}', [QuestionController::class, 'storeChoixg'])->name('choix.storeg');
+        Route::put('/choixug/{id}', [ChoixController::class, 'updateg'])->name('choix.updateg');
+        Route::delete('/choixdg/{id}', [ChoixController::class, 'destroyg'])->name('choix.destroyg');
 
     });
 
@@ -89,15 +103,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/choix/store/{question_id}', [QuestionController::class, 'storeChoix'])->name('choix.store');
 
     // Route pour afficher les questions d'un questionnaire
-    Route::get('/questionnaires/{id}/questions', [QuestionnaireController::class, 'showQuestions'])->name('questionnaires.questions');
+    Route::get('/questionnaires/{questionnaire}/questions/{entreprise}', [QuestionnaireController::class, 'showQuestions'])->name('questionnaires.questions');
+
+
     // Route pour soumettre les réponses
-    Route::post('/questionnaires/{id}/questions/submit', [ResponseController::class, 'submit'])->name('responses.submit');
+    Route::post('/questionnaires/{id}/questions/submit/{entreprise}', [ResponseController::class, 'submit'])->name('responses.submit');
     Route::get('/questionnaires/{id}/dashboard', [DashboardController::class, 'show'])->name('questionnaires.dashboard');
 
 
     Route::get('/choix/{id}/edit', [ChoixController::class, 'edit'])->name('choix.edit');
     Route::put('/choix/{id}', [ChoixController::class, 'update'])->name('choix.update');
     Route::delete('/choix/{id}', [ChoixController::class, 'destroy'])->name('choix.destroy');
+
+    Route::get('/secteurs/{id_secteur}/compare', [EntrepriseController::class, 'compareBySector'])->name('secteurs.compare');
 
 
 

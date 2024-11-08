@@ -6,6 +6,7 @@ use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 use App\Models\Response;
 use App\Models\Suggestion;
+use App\Models\Entreprise;
 use App\Models\Question;
 use App\Mail\ThankYouForResponse;
 use Illuminate\Support\Facades\Mail;
@@ -13,23 +14,23 @@ use Illuminate\Support\Facades\Mail;
 class ResponseController extends Controller
 {
     //
-    public function submit(Request $request, $id)
+    public function submit(Request $request, $id, $entrepriseId)
     {
         $request->validate([
             'responses.*' => 'required',
             'suggestion' => 'nullable|string|max:1000'
         ]);
 
-        $questionnaire = Questionnaire::find($id);
+        $questionnaire = Questionnaire::findOrFail($id);
 
         foreach ($request->responses as $question_id => $response) {
-            $question = Question::find($question_id);
+            $question = Question::findOrFail($question_id);
 
             if ($question->type === 'onechoice') {
                 Response::create([
                     'questionnaire_id' => $id,
                     'question_id' => $question_id,
-                    'choix_id' => $response, // Ici le choix_id ne sera pas nul
+                    'choix_id' => $response,
                     'user_id' => auth()->id(),
                 ]);
             } elseif ($question->type === 'multiplechoice') {
@@ -37,7 +38,7 @@ class ResponseController extends Controller
                     Response::create([
                         'questionnaire_id' => $id,
                         'question_id' => $question_id,
-                        'choix_id' => $choix_id, // Ici aussi choix_id n'est pas nul
+                        'choix_id' => $choix_id,
                         'user_id' => auth()->id(),
                     ]);
                 }
@@ -45,7 +46,15 @@ class ResponseController extends Controller
                 Response::create([
                     'questionnaire_id' => $id,
                     'question_id' => $question_id,
-                    'text_answer' => $response, // Réponse textuelle sans choix_id
+                    'text_answer' => $response,
+                    'user_id' => auth()->id(),
+                ]);
+            }elseif ($question->type === 'numericrange') {
+                $numericAnswer = max(0, min($response, $question->max_value)); // Ajustement dans les limites
+                Response::create([
+                    'questionnaire_id' => $id,
+                    'question_id' => $question_id,
+                    'numeric_answer' => $numericAnswer,
                     'user_id' => auth()->id(),
                 ]);
             }
@@ -59,13 +68,15 @@ class ResponseController extends Controller
             ]);
         }
 
-        $entreprise = $questionnaire->entreprise;
+        // Obtenir l'entreprise via l'ID passé en paramètre
+        $entreprise = Entreprise::findOrFail($entrepriseId);
 
+        // Envoi de l'e-mail de remerciement
         Mail::to("edracresurek@gmail.com")->send(new ThankYouForResponse(auth()->user(), $questionnaire));
 
+        // Redirection vers la page des questionnaires de l'entreprise
         return redirect()->route('entreprises.list_questionnaire', ['id' => $entreprise->id_entreprise])
             ->with('success', 'Responses and suggestion submitted successfully.');
     }
-
 
 }

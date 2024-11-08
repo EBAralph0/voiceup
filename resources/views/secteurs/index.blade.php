@@ -5,7 +5,7 @@
     <h1 class="d-flex mt-2" style="justify-content: space-between;">
         <div>Sectors</div>
         <!-- Add Button -->
-        <button class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#addSecteurModal">Add</button>
+        <button class="btn btn-success btn-sm float-right" data-bs-toggle="modal" data-bs-target="#addSecteurModal">Add</button>
     </h1>
     <input type="text" id="search" class="form-control mb-4" placeholder="Search...">
     <table id="secteurTable" class="table table-striped">
@@ -21,7 +21,7 @@
                     <td>{{ $secteur->nom_secteur }}</td>
                     <td>
                         <!-- Edit Button -->
-                        <button class="btn btn-primary btn-sm me-1" data-toggle="modal" data-target="#editSecteurModal-{{ $secteur->id_secteur }}"><i class="bi bi-pencil">Edit</i></button>
+                        <button class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#editSecteurModal-{{ $secteur->id_secteur }}"><i class="bi bi-pencil">Edit</i></button>
 
                         <!-- Edit Modal -->
                         <div class="modal fade" id="editSecteurModal-{{ $secteur->id_secteur }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -51,7 +51,7 @@
                         </div>
 
                         <!-- Delete Button -->
-                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteSecteurModal-{{ $secteur->id_secteur }}"><i class="bi bi-trash-fill">Delete</i></button>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSecteurModal-{{ $secteur->id_secteur }}"><i class="bi bi-trash-fill">Delete</i></button>
 
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteSecteurModal-{{ $secteur->id_secteur }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -76,6 +76,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- questionnaire Button -->
+                        <button class="btn btn-success btn-sm ms-1" onclick="window.location='{{ route('secteurs.questionnaires.index', $secteur->id_secteur) }}'">
+                            <i class="bi bi-gear"> Questionnaires</i>
+                        </button>
                     </td>
                 </tr>
             @endforeach

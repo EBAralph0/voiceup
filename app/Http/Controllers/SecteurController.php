@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Models\Secteur;
+use App\Models\Questionnaire;
 
 class SecteurController extends Controller
 {
@@ -56,4 +57,16 @@ class SecteurController extends Controller
 
         return redirect()->route('secteurs.index')->with('success', 'Secteur created successfully');
     }
+
+    public function detail($id_questionnaire)
+    {
+        // Charger le questionnaire et récupérer le secteur via les relations
+        $questionnaire = Questionnaire::with(['secteur', 'questions.choix'])->findOrFail($id_questionnaire);
+        $secteur = $questionnaire->secteur;
+
+        return view('secteurs.detail', compact('secteur', 'questionnaire'));
+    }
+
+
+
 }

@@ -1,10 +1,7 @@
-<div class="bg-dark border-right h-100 ps-2" id="sidebar-wrapper">
-    <div class="d-flex justify-content-between">
-        <div class="sidebar-heading text-light">Management</div>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary me-2">
-            <i class="bi bi-arrow-left-circle"></i>
-        </a>
-    </div>
+@auth
+@if (Auth::user()->role === 'admin')
+<div class="bg-dark h-100 ps-2" id="sidebar-wrapper">
+
 
     <div class="list-group list-group-flush">
         <a href="{{ route('secteurs.index') }}"
@@ -23,6 +20,7 @@
            class="list-group-item list-group-item-action bg-dark text-light {{ Request::routeIs('demandes.index') ? 'active text-white' : '' }}">
             Requests
         </a>
-        <!-- Add other navigation links here, using the same pattern -->
     </div>
 </div>
+@endif
+@endauth

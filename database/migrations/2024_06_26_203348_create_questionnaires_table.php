@@ -19,12 +19,16 @@ return new class extends Migration
             $table->string('intitule');
             $table->string('description');
             $table->unsignedBigInteger('created_by');
-            $table->string('entreprise_id');
+            $table->string('entreprise_id')->nullable();;
+            $table->string('id_secteur')->nullable(); // Secteur ID
+
             $table->timestamps();
 
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('entreprise_id')->references('id_entreprise')->on('entreprises')->onDelete('cascade');
+            $table->foreign('id_secteur')->references('id_secteur')->on('secteurs')->onDelete('cascade');
+
         });
     }
 

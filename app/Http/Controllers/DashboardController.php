@@ -11,16 +11,25 @@ class DashboardController extends Controller
 {
     public function show($id)
     {
-        // Charger le questionnaire avec les questions, choix et réponses associées
         $questionnaire = Questionnaire::with(['questions.choix.responses', 'questions.responses'])->findOrFail($id);
         $data = [];
         $frequencyData = [];
+        $overallFrequencyData = [];
 
         foreach ($questionnaire->questions as $question) {
             $questionData = [];
-            $responsesCount = 0; // Compteur global des réponses
+            $responsesCount = 0;
+            $questionFrequency = [];
+            $dates = [];
 
-            // Gestion des questions de type "onechoice" ou "multiplechoice"
+            // Normaliser les dates pour chaque choix
+            foreach ($question->choix as $choix) {
+                foreach ($choix->responses as $response) {
+                    $date = Carbon::parse($response->created_at)->format('Y-m-d');
+                    $dates[$date] = 0;
+                }
+            }
+
             if ($question->type === 'onechoice' || $question->type === 'multiplechoice') {
                 foreach ($question->choix as $choix) {
                     $count = $choix->responses->count();
@@ -31,41 +40,52 @@ class DashboardController extends Controller
                         'count' => $count,
                     ];
 
-                    // Collecte des données de fréquence pour l'histogramme
+                    $choixFrequency = $dates;
                     foreach ($choix->responses as $response) {
                         $date = Carbon::parse($response->created_at)->format('Y-m-d');
-                        if (!isset($frequencyData[$date])) {
-                            $frequencyData[$date] = 0;
+                        $choixFrequency[$date]++;
+                    }
+                    $questionFrequency[$choix->text] = $choixFrequency;
+
+                    foreach ($choixFrequency as $date => $count) {
+                        if (!isset($overallFrequencyData[$date])) {
+                            $overallFrequencyData[$date] = 0;
                         }
-                        $frequencyData[$date]++;
+                        $overallFrequencyData[$date] += $count;
                     }
                 }
             } elseif ($question->type === 'textanswer') {
-                // Récupérer les réponses textuelles
                 $textResponses = $question->responses->whereNotNull('text_answer')->pluck('text_answer');
                 $responsesCount = $textResponses->count();
-
-                // Ajouter les réponses textuelles pour affichage dans une table
                 $questionData = [
                     'responses' => $textResponses->toArray(),
                 ];
+            } elseif ($question->type === 'numericrange') {
+                $numericResponses = $question->responses->whereNotNull('numeric_answer')->pluck('numeric_answer');
+                $responsesCount = $numericResponses->count();
+                $questionData = [
+                    'responses' => $numericResponses->toArray(),
+                ];
             }
 
-            // Stocker les données de la question avec son type
+            ksort($questionFrequency);
+            $frequencyData[$question->id] = $questionFrequency;
+
             $data[] = [
                 'id' => $question->id,
                 'question' => $question->text,
-                'type' => $question->type, // Ajouter le type pour le traitement conditionnel dans la vue
-                'data' => $questionData, // Ajouter les données, y compris les réponses textuelles
+                'type' => $question->type,
+                'data' => $questionData,
                 'responses_count' => $responsesCount,
             ];
         }
 
-        ksort($frequencyData);
+        ksort($overallFrequencyData);
 
-
-        return view('dashboards.questionnaire', compact('questionnaire', 'data', 'frequencyData'));
+        return view('dashboards.questionnaire', compact('questionnaire', 'data', 'frequencyData', 'overallFrequencyData'));
     }
+
+
 }
 
 
